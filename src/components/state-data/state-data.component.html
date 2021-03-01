@@ -1,0 +1,48 @@
+<div class="state-data-container pl-1 pr-1">
+    <mat-form-field appearance="fill" class="w-50">
+        <mat-label>States</mat-label>
+        <mat-select [(ngModel)]="selectedState" name="states" (selectionChange)="getStateData()">
+            <mat-option *ngFor="let state of states" [value]="state.code">
+                {{state.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill" class="w-50 pl-1">
+        <mat-label>Chart Data Fields</mat-label>
+        <mat-select [(ngModel)]="selectedDataFields" name="dataFields" (selectionChange)="creteChart()">
+            <mat-option *ngFor="let field of dataFields" [value]="field.code">
+                {{field.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="w-50">
+        <mat-label>Chart Type</mat-label>
+        <mat-select [(ngModel)]="selectedChartType" name="chartTypes" (selectionChange)="getStateData()">
+            <mat-option *ngFor="let cType of chartType" [value]="cType.code">
+                {{cType.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <mat-form-field appearance="fill" class="w-50 pl-1">
+        <mat-label>Number of Days</mat-label>
+        <mat-select [(ngModel)]="selectedDataDays" name="dataDays" (selectionChange)="creteChart()">
+            <mat-option *ngFor="let day of dataDays" [value]="day.code">
+                {{day.name}}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
+    
+    <div class="w-100">
+        <app-chart 
+            [chartType]='selectedChartType'
+            [chartLabels]='chartLabels'
+            [chartOptions]='chartOptions'
+            [chartData]='chartData'
+            [showLegend]='chartLegend'
+        ></app-chart>
+    </div>
+</div>
+<!-- {{selectedState}} -->
