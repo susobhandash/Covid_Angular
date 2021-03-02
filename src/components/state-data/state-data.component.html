@@ -10,7 +10,7 @@
     
     <mat-form-field appearance="fill" class="w-50 pl-1">
         <mat-label>Chart Data Fields</mat-label>
-        <mat-select [(ngModel)]="selectedDataFields" name="dataFields" (selectionChange)="creteChart()">
+        <mat-select [(ngModel)]="selectedDataFields" name="dataFields" (selectionChange)="getStateData()">
             <mat-option *ngFor="let field of dataFields" [value]="field.code">
                 {{field.name}}
             </mat-option>
@@ -28,14 +28,14 @@
     
     <mat-form-field appearance="fill" class="w-50 pl-1">
         <mat-label>Number of Days</mat-label>
-        <mat-select [(ngModel)]="selectedDataDays" name="dataDays" (selectionChange)="creteChart()">
+        <mat-select [(ngModel)]="selectedDataDays" name="dataDays" (selectionChange)="getStateData()">
             <mat-option *ngFor="let day of dataDays" [value]="day.code">
                 {{day.name}}
             </mat-option>
         </mat-select>
     </mat-form-field>
     
-    <div class="w-100">
+    <div class="chart-container" style="height: 500px; width: 70%; margin: 0 auto;">
         <app-chart 
             [chartType]='selectedChartType'
             [chartLabels]='chartLabels'
