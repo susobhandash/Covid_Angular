@@ -1,11 +1,11 @@
 <mat-drawer-container class="example-container" [hasBackdrop]="true">
   <mat-drawer #drawer mode="over">
     <mat-selection-list #menus [multiple]="false" color="accent">
-      <mat-list-option value="home" routerLink="home" routerLinkActive="active" color="accent">
+      <mat-list-option value="home" routerLink="home" routerLinkActive="active" color="accent" (click)="drawer.toggle()">
         <mat-icon mat-list-icon>home</mat-icon>
         <div mat-line>Country Data</div>
       </mat-list-option>
-      <mat-list-option value="state" routerLink="states" routerLinkActive="active" color="accent">
+      <mat-list-option value="state" routerLink="states" routerLinkActive="active" color="accent" (click)="drawer.toggle()">
         <mat-icon mat-list-icon>list</mat-icon>
         <div mat-line>State Data</div>
       </mat-list-option>

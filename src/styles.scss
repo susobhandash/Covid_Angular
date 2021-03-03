@@ -37,6 +37,7 @@ body {
 .w-50 {
     width: 50%;
 }
+
 .w-100 {
     width: 100%;
 }
@@ -134,9 +135,9 @@ body {
     padding-right: 1rem !important;
 }
 
-
+// Active Color
 .active-text {
-    color: #007bff;
+    color: rgba(0, 123, 255, 1);
 }
 
 .active-text-light {
@@ -151,75 +152,97 @@ body {
     background: rgba(0, 123, 255, 0.125);
 }
 
-
+// Confirmed Color
 .confirmed-text {
-    color: #ff073a;
+    color: rgba(255, 99, 132, 1);
 }
 
 .confirmed-text-light {
-    color: rgba(255, 7, 58, .6);
+    color: rgba(255, 99, 132, .6);
 }
 
 .confirmed-bg-light {
-    background: rgba(255, 7, 58, .12549);
+    background: rgba(255, 99, 132, .12549);
 }
 
 .confirmed-bg {
-    background: rgba(255, 7, 58, 0.125);
+    background: rgba(255, 99, 132, 0.125);
 }
 
-
+// Recovered Color
 .recovered-text {
-    color: #28a745;
+    color: rgba(75, 192, 192, 1);
 }
 
 .recovered-text-light {
-    color: rgba(40, 167, 69, .6);
+    color: rgba(75, 192, 192, .6);
 }
 
 .recovered-bg-light {
-    background: rgba(40, 167, 69, .12549);
+    background: rgba(75, 192, 192, .12549);
 }
 
 .recovered-bg {
-    background: rgba(40, 167, 69, 0.125);
+    background: rgba(75, 192, 192, 0.125);
 }
 
+// Deceased Color
 .deceased-text {
-    color: #6c757d;
+    color: rgba(201, 203, 207, 1);
 }
 
 .deceased-text-light {
-    color: rgba(108, 117, 125, .6);
+    color: rgba(201, 203, 207, .6);
 }
 
 .deceased-bg-light {
-    background: rgba(108, 117, 125, .0627451);
+    background: rgba(201, 203, 207, .0627451);
 }
 
 .deceased-bg {
-    background: rgba(108, 117, 125, 0.125);
+    background: rgba(201, 203, 207, 0.125);
 }
 
-
+// Active Color
 .info-text {
-    color: rgba(32, 26, 162, .866667); //#9673b9
+    color: rgba(153, 102, 255, .866667); //#9673b9
 }
 
 .info-text-light {
-    color: rgba(32, 26, 162, .6);
+    color: rgba(153, 102, 255, .6);
 }
 
 .info-bg-light {
-    background: rgba(32, 26, 162, .12549);
+    background: rgba(153, 102, 255, .12549);
 }
 
 .info-bg {
-    background: rgba(32, 26, 162, 0.125);
+    background: rgba(153, 102, 255, 0.125);
+}
+
+// Vaccine
+.vaccine-text {
+    color: rgba(54, 162, 235, .866667); //#9673b9
+}
+
+.vaccine-text-light {
+    color: rgba(54, 162, 235, .6);
+}
+
+.vaccine-bg-light {
+    background: rgba(54, 162, 235, .12549);
+}
+
+.vaccine-bg {
+    background: rgba(54, 162, 235, 0.125);
 }
 
 
 // Material
+.mat-drawer-container {
+    background-color: #fff;
+}
+
 .example-spacer {
     flex: 1 1 auto;
 }
@@ -246,6 +269,8 @@ table.mat-table {
     th.mat-header-cell {
         font-weight: 600;
         text-align : center;
+        box-shadow : 2px 3px 2px rgb(0 0 0 / 12%);
+        font-size  : 16px;
 
         &:not(:first-of-type) .mat-sort-header-container {
             justify-content: center;
@@ -257,7 +282,8 @@ tr.mat-footer-row {
     font-weight: bold;
 
     td {
-        color: #000;
+        color     : #000;
+        box-shadow: 2px -3px 2px rgb(0 0 0 / 12%);
     }
 }
 
@@ -298,7 +324,7 @@ app-country-data {
         }
 
         .chart-container {
-            width: 100%!important;
+            width: 100% !important;
         }
 
         // Material
@@ -314,8 +340,9 @@ app-country-data {
             padding-right: 0px !important;
         }
 
-        table.mat-table td {
-            font-size: 11px;
+        table.mat-table td,
+        th.mat-header-cell {
+            font-size: 12px!important;
         }
 
         tr.mat-row,

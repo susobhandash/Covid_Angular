@@ -21,7 +21,7 @@ export class StateDataComponent implements OnInit {
 
   // Selecetd Variables for Dropdowns
   selectedState = 'MH';
-  selectedDataFields = '';
+  selectedDataFields = [];
   selectedChartType: ChartType = 'bar';
   selectedDataDays = 7;
 
@@ -30,22 +30,29 @@ export class StateDataComponent implements OnInit {
   dates = [];
   totalData = {};
 
-  public chartOptions: ChartOptions = {
+  public chartOptions: ChartOptions;
+
+  public barChartOptions: ChartOptions = {
     responsive: true,
     scales: {
       xAxes: [{
+        ticks: {
+          minRotation: 90,
+          maxRotation: 90
+        },
         gridLines: {
           display: false
-        },
-        ticks: {
-          fontStyle: 'bold'
         }
       }], yAxes: [{
         ticks: {
-          beginAtZero: true
+          beginAtZero: false,
+          fontStyle: 'bold'
         },
         gridLines: {
-          display: false
+          display: true,
+          color: "#e5e5e5",
+          zeroLineWidth: 2,
+          zeroLineColor: "#333"
         }
       }]
     },
@@ -72,6 +79,8 @@ export class StateDataComponent implements OnInit {
 
     this.selectedState = this.location.getState()['state'] ? this.location.getState()['state'] : 'MH';
 
+    this.chartOptions = this.barChartOptions;
+
     // Date Dropdown value Init
     this.dataFields = [
       { name: 'Daily Confirmed', code: 'delta-confirmed' },
@@ -90,12 +99,13 @@ export class StateDataComponent implements OnInit {
       { name: 'Total Delta Tested', code: 'total-tested' },
       { name: 'Total Delta Vaccinated', code: 'total-vaccinated' },
     ];
-    this.selectedDataFields = this.dataFields[0].code;
+    this.selectedDataFields[0] = this.dataFields[0].code;
 
     // Chart Type Dropdown value Init
     this.chartType = [
       { name: 'Bar', code: 'bar' },
-      { name: 'Line', code: 'line' }
+      { name: 'Line', code: 'line' },
+      { name: 'Pie', code: 'pie' }
     ];
 
     // Data Days Dropdown value Init
@@ -146,18 +156,36 @@ export class StateDataComponent implements OnInit {
   }
 
   // Get Selected State data for last 7 days for Selected State
-  getStateData() {
-    const data = this.totalData[this.selectedState]['dates'];
-    const dates = Object.keys(this.totalData[this.selectedState].dates);
+  getStateData(event=null) {
+    if (this.selectedDataFields.length > 3) {
+      // this.selectedDataFields = [];
+      this.selectedDataFields.length = 3;
+      this.selectedDataFields = [...this.selectedDataFields];
+    }
+    this.chartData = [];
+
+    this.selectedDataFields.forEach((el, idx, a) => {
+      this.creteChartData(el, idx);
+    });
+    // let label = this.dataFields.filter(el => {
+    //   return el.code === this.selectedDataFields;
+    // });
+    // this.chartData[0].label = label && label.length > 0 ? label[0].name : '';
+
+
+    // console.log(dateData);
+  }
+
+  creteChartData(dataFields, idx) {
+    let field = dataFields.split('-')[0];
+    let dataParam = dataFields.split('-')[1];
+
     let dateData = [];
     this.chartLabels = [];
-    this.chartData[0].data = [];
-    let label = this.dataFields.filter(el => {
-      return el.code === this.selectedDataFields;
-    });
-    this.chartData[0].label = label && label.length > 0 ? label[0].name : '';
-    let field = this.selectedDataFields.split('-')[0];
-    let dataParam = this.selectedDataFields.split('-')[1];
+    this.chartData.push({ data: [] });
+    this.chartData[idx].data = [];
+    const data = this.totalData[this.selectedState]['dates'];
+    const dates = Object.keys(this.totalData[this.selectedState].dates);
 
     for (let i = 0; i < this.selectedDataDays; i++) {
       dateData.push({
@@ -165,58 +193,67 @@ export class StateDataComponent implements OnInit {
         "data": data[Object.keys(data)[Object.keys(data).length - (i + 2)]]
       });
       this.chartLabels.push(dates[dates.length - (i + 2)]);
-      this.chartData[0].data.push(data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam]);
-      this.getChartProps(dataParam);
+      this.chartData[idx].data.push(data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam]);
+      this.getChartProps(field, dataParam, idx);
     }
 
-    console.log(dateData);
+    let label = this.dataFields.filter(el => {
+      return el.code === dataFields;
+    });
+    this.chartData[idx].label = label && label.length > 0 ? label[0].name : '';
   }
 
-  creteChart() { }
-
   // Get Chart Color and Labels
-  getChartProps(dataParam) {
+  getChartProps(field, dataParam, idx) {
     let bgColor = '';
     let borderColor = '';
     let hoverBgColor = '';
 
     switch (dataParam) {
       case 'confirmed':
-        bgColor = 'rgba(255, 7, 58, .12549)';
-        borderColor = '#ff073a';
-        hoverBgColor = 'rgba(255, 7, 58, .5)';
+        bgColor = 'rgba(255, 99, 132, .2)';
+        borderColor = 'rgba(255, 99, 132, 1)';
+        hoverBgColor = 'rgba(255, 99, 132, .5)';
         break;
 
       case 'recovered':
-        bgColor = 'rgba(40, 167, 69, .12549)';
-        borderColor = '#28a745';
-        hoverBgColor = 'rgba(40, 167, 69, .5)';
+        bgColor = 'rgba(75, 192, 192, .2)';
+        borderColor = 'rgba(75, 192, 192, 1)';
+        hoverBgColor = 'rgba(75, 192, 192, .5)';
         break;
 
       case 'deceased':
-        bgColor = 'rgba(108, 117, 125, .0627451)';
-        borderColor = '#6c757d';
-        hoverBgColor = 'rgba(108, 117, 125, .5)';
+        bgColor = 'rgba(201, 203, 207, .2)';
+        borderColor = 'rgba(201, 203, 207, 1)';
+        hoverBgColor = 'rgba(201, 203, 207, .5)';
         break;
 
       case 'tested':
-        bgColor = 'rgba(32, 26, 162, .12549)';
-        borderColor = 'rgba(32, 26, 162, .866667)';
-        hoverBgColor = 'rgba(32, 26, 162, .5)';
+        bgColor = 'rgba(153, 102, 255, .2)';
+        borderColor = 'rgba(153, 102, 255, 1)';
+        hoverBgColor = 'rgba(153, 102, 255, .5)';
         break;
 
       case 'vaccinated':
-        bgColor = 'rgba(40, 167, 69, .12549)';
-        borderColor = '#28a745';
-        hoverBgColor = 'rgba(40, 167, 69, .5)';
+        bgColor = 'rgba(54, 162, 235, .2)';
+        borderColor = 'rgba(54, 162, 235, 1)';
+        hoverBgColor = 'rgba(54, 162, 235, .5)';
         break;
     }
 
-    this.chartData[0].backgroundColor = bgColor;
-    this.chartData[0].borderColor = borderColor;
-    this.chartData[0].hoverBorderColor = borderColor;
-    this.chartData[0].hoverBackgroundColor = hoverBgColor;
-    this.chartData[0].borderWidth = 1;
+    this.chartData[idx].backgroundColor = bgColor;
+    this.chartData[idx].borderColor = borderColor;
+    this.chartData[idx].hoverBorderColor = borderColor;
+    this.chartData[idx].hoverBackgroundColor = hoverBgColor;
+    this.chartData[idx].borderWidth = 1;
+
+    //  if (field === 'delta7' || field === 'total') {
+    //    this.barChartOptions.scales.yAxes[0].ticks.beginAtZero = false;
+    //  }
+
+    this.chartData = [...this.chartData];
+    this.chartOptions = Object.assign(this.barChartOptions);
+    this.chartType = Object.assign(this.chartType);
   }
 
 }

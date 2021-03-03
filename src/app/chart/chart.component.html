@@ -1,6 +1,6 @@
-<!-- {{chartType}} -->
-<div style="height: 500px; background-color: aqa;">
+
+<div style="height: 500px;" *ngIf="chartType === 'bar'">
     <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions"
-        [legend]="showLegend" [chartType]="chartType">
+        [legend]="showLegend" [chartType]="chartType" >
     </canvas>
 </div>
