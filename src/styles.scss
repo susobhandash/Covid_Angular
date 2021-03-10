@@ -24,6 +24,7 @@ body {
     align-items    : center;
     justify-content: center;
     height         : 14px;
+    font-weight    : bold;
 
     .mat-icon {
         height   : 14px;
@@ -32,8 +33,36 @@ body {
     }
 }
 
+.kpi-container > *:not(.active-container) {
+    transition: all linear 0.2s;
+
+    &:hover {
+        filter: brightness(0.5);
+    }
+}
+
 
 // Utility
+.d-flex {
+    display: flex;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.center {
+    margin: 0 auto;
+}
+
 .w-50 {
     width: 50%;
 }
@@ -42,12 +71,24 @@ body {
     width: 100%;
 }
 
+.br-5 {
+    border-radius: 5px;
+}
+
 .bold {
     font-weight: 600;
 }
 
 .text-center {
     text-align: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.justify-around {
+    justify-content: space-around;
 }
 
 .c-p {
@@ -149,7 +190,7 @@ body {
 }
 
 .active-bg {
-    background: rgba(0, 123, 255, 0.125);
+    background: rgba(0, 123, 255, 0.18);
 }
 
 // Confirmed Color
@@ -162,11 +203,11 @@ body {
 }
 
 .confirmed-bg-light {
-    background: rgba(255, 99, 132, .12549);
+    background: rgba(255, 99, 132, .0627451);
 }
 
 .confirmed-bg {
-    background: rgba(255, 99, 132, 0.125);
+    background: rgba(255, 99, 132, 0.18);
 }
 
 // Recovered Color
@@ -179,20 +220,21 @@ body {
 }
 
 .recovered-bg-light {
-    background: rgba(75, 192, 192, .12549);
+    background: rgba(75, 192, 192, .0627451);
 }
 
 .recovered-bg {
-    background: rgba(75, 192, 192, 0.125);
+    background: rgba(75, 192, 192, 0.18);
 }
 
 // Deceased Color
 .deceased-text {
-    color: rgba(201, 203, 207, 1);
+    // color: rgba(201, 203, 207, 1);
+    color: rgba(173, 173, 175, 1);
 }
 
 .deceased-text-light {
-    color: rgba(201, 203, 207, .6);
+    color: rgba(173, 173, 175, .6);
 }
 
 .deceased-bg-light {
@@ -200,7 +242,7 @@ body {
 }
 
 .deceased-bg {
-    background: rgba(201, 203, 207, 0.125);
+    background: rgba(201, 203, 207, 0.18);
 }
 
 // Active Color
@@ -213,11 +255,11 @@ body {
 }
 
 .info-bg-light {
-    background: rgba(153, 102, 255, .12549);
+    background: rgba(153, 102, 255, .0627451);
 }
 
 .info-bg {
-    background: rgba(153, 102, 255, 0.125);
+    background: rgba(153, 102, 255, 0.18);
 }
 
 // Vaccine
@@ -230,11 +272,11 @@ body {
 }
 
 .vaccine-bg-light {
-    background: rgba(54, 162, 235, .12549);
+    background: rgba(54, 162, 235, .0627451);
 }
 
 .vaccine-bg {
-    background: rgba(54, 162, 235, 0.125);
+    background: rgba(54, 162, 235, 0.18);
 }
 
 
@@ -308,7 +350,7 @@ app-country-data {
     body {
 
         // Application
-        .mat-drawer-content>* {
+        .mat-drawer-content>*:not(.pt-0) {
             padding    : 0px !important;
             padding-top: 10px !important;
         }
@@ -342,7 +384,7 @@ app-country-data {
 
         table.mat-table td,
         th.mat-header-cell {
-            font-size: 12px!important;
+            font-size: 12px !important;
         }
 
         tr.mat-row,
@@ -350,6 +392,10 @@ app-country-data {
             min-height: 32px;
         }
 
+        .w-50 {
+            width       : 100% !important;
+            padding-left: 0px !important;
+        }
 
         font-size: 0.7rem;
     }

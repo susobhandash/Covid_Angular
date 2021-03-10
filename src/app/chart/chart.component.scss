@@ -1,0 +1,136 @@
+$red: #ff4136;
+
+figure {
+    margin: 0;
+}
+
+text.bar-chart-label,
+text.bar-chart-data {
+    font-weight: bold;
+    font-size  : 12px;
+}
+
+text.bar-chart-data {
+    font-size: 15px !important;
+}
+
+.bar-chart {
+    display         : inline-block;
+    margin-right    : 0;
+    transition      : all .3s ease;
+    // background-color: #f7f9f9;
+    border-radius   : 5px;
+
+    .bar:hover,
+    .bar:focus {
+
+        rect {
+            opacity: 1;
+        }
+
+        text.bar-chart-label,
+        text.bar-chart-data {
+            display: block !important;
+        }
+    }
+
+    .bar:not(:last-child) {
+
+        text.bar-chart-label,
+        text.bar-chart-data {
+            display: none;
+        }
+    }
+}
+
+.grid {
+    stroke          : #ccc;
+    stroke-dasharray: 0;
+    stroke-width    : 1;
+}
+
+svg:hover {
+    .bar:last-child {
+        text {
+            display: none;
+        }
+    }
+}
+
+.bar {
+    position   : relative;
+    transition : fill .3s ease;
+    cursor     : pointer;
+    // font-family: Helvetica, sans-serif;
+    display    : inline-block;
+
+    rect {
+        opacity   : 0.4;
+        transition: all linear 0.2s;
+    }
+
+    &.highlight-bar rect,
+    &.highlight-bar text {
+        opacity: 1;
+        display: block;
+    }
+}
+
+figcaption {
+    font-weight  : bold;
+    margin-bottom: 20px;
+    text-align   : center;
+}
+
+
+
+
+.line-chart {
+    padding-top  : 20px;
+    border-radius: 5px;
+
+    polyline {
+        stroke-dasharray : 300.5px;
+        stroke-dashoffset: 300.5px;
+        animation        : test 4s forwards;
+    }
+
+    circle {
+        cursor: pointer;
+
+        &:hover+text {
+            display: block;
+        }
+    }
+
+    &:hover .bar.highlight-bar text:not(.title) {
+        display: none;
+    }
+
+    .bar {
+
+        text:not(.title) {
+            display: none;
+        }
+
+        &:hover > text:not(.title) {
+            opacity: 1;
+            display: block !important;
+        }
+
+        &.highlight-bar text:not(.title) {
+            opacity: 1;
+            display: block;
+        }
+    }
+}
+
+@keyframes test {
+    from {
+        stroke-dashoffset: 300.5px;
+    }
+
+    to {
+        stroke-dashoffset: 0;
+    }
+}

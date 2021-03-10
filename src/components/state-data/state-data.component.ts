@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CovidDataService } from '../../services/covid-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
+// import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
 // import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { Label } from 'ng2-charts';
 
@@ -16,13 +16,13 @@ export class StateDataComponent implements OnInit {
   // Dropdown Arrays
   states: States[] = [];
   dataFields: DataFields[] = [];
-  chartType: ChartTypes[] = [];
+  chartType: string = 'bar';
   dataDays: DataDays[] = [];
 
   // Selecetd Variables for Dropdowns
   selectedState = 'MH';
   selectedDataFields = [];
-  selectedChartType: ChartType = 'bar';
+  selectedChartType = 'bar';
   selectedDataDays = 7;
 
   // Others
@@ -30,46 +30,28 @@ export class StateDataComponent implements OnInit {
   dates = [];
   totalData = {};
 
-  public chartOptions: ChartOptions;
+  // public chartOptions: ChartOptions;
 
-  public barChartOptions: ChartOptions = {
-    responsive: true,
-    scales: {
-      xAxes: [{
-        ticks: {
-          minRotation: 90,
-          maxRotation: 90
-        },
-        gridLines: {
-          display: false
-        }
-      }], yAxes: [{
-        ticks: {
-          beginAtZero: false,
-          fontStyle: 'bold'
-        },
-        gridLines: {
-          display: true,
-          color: "#e5e5e5",
-          zeroLineWidth: 2,
-          zeroLineColor: "#333"
-        }
-      }]
-    },
-    plugins: {
-      datalabels: {
-        anchor: 'end',
-        align: 'end',
-      }
-    }
+  public chartOptions: ChartOptions = {
+    showBg: true
   };
   public chartLabels: Label[] = [];
-  // public chartType: ChartType = 'bar';
   public chartLegend = true;
-  // public barChartPlugins = [pluginDataLabels];
-  public chartData: ChartDataSets[] = [
-    //{ data: [65, 59, 80, 81, 56, 55, 40], label: 'Delta - Confirmed' }
-  ];
+  public chartData: ChartData = new ChartData();
+
+  public selectedDelta = 'delta-confirmed';
+  public deltaChartOptions: ChartOptions = {
+    showBg: true
+  }
+  public deltaChartData: ChartData = new ChartData();
+  public deltaChartLabels: Label[] = [];
+
+  public selectedTotal = 'total-confirmed';
+  public totalChartOptions: ChartOptions = {
+    showBg: true
+  }
+  public totalChartData: ChartData = new ChartData();
+  public totalChartLabels: Label[] = [];
 
   constructor(private data: CovidDataService, private activatedroute: ActivatedRoute, private router: Router, private location: Location) { }
 
@@ -79,7 +61,7 @@ export class StateDataComponent implements OnInit {
 
     this.selectedState = this.location.getState()['state'] ? this.location.getState()['state'] : 'MH';
 
-    this.chartOptions = this.barChartOptions;
+    // this.chartOptions = this.barChartOptions;
 
     // Date Dropdown value Init
     this.dataFields = [
@@ -102,11 +84,11 @@ export class StateDataComponent implements OnInit {
     this.selectedDataFields[0] = this.dataFields[0].code;
 
     // Chart Type Dropdown value Init
-    this.chartType = [
-      { name: 'Bar', code: 'bar' },
-      { name: 'Line', code: 'line' },
-      { name: 'Pie', code: 'pie' }
-    ];
+    // this.chartType = [
+    //   { name: 'Bar', code: 'bar' },
+    //   { name: 'Line', code: 'line' },
+    //   { name: 'Pie', code: 'pie' }
+    // ];
 
     // Data Days Dropdown value Init
     this.dataDays = [
@@ -156,62 +138,85 @@ export class StateDataComponent implements OnInit {
   }
 
   // Get Selected State data for last 7 days for Selected State
-  getStateData(event=null) {
-    if (this.selectedDataFields.length > 3) {
-      // this.selectedDataFields = [];
-      this.selectedDataFields.length = 3;
-      this.selectedDataFields = [...this.selectedDataFields];
-    }
-    this.chartData = [];
+  getStateData(event = null) {
+    this.chartData = new ChartData();
 
-    this.selectedDataFields.forEach((el, idx, a) => {
-      this.creteChartData(el, idx);
-    });
-    // let label = this.dataFields.filter(el => {
-    //   return el.code === this.selectedDataFields;
-    // });
-    // this.chartData[0].label = label && label.length > 0 ? label[0].name : '';
+    this.chartLabels = [];
+    this.deltaChartLabels = [];
+    this.totalChartLabels = [];
 
+    this.chartData.data = [];
+    this.deltaChartData.data = [];
+    this.totalChartData.data = [];
 
-    // console.log(dateData);
+    this.creteChartData(this.selectedDelta);
+    this.creteChartData(this.selectedTotal);
   }
 
-  creteChartData(dataFields, idx) {
+  creteChartData(dataFields) {
     let field = dataFields.split('-')[0];
     let dataParam = dataFields.split('-')[1];
 
-    let dateData = [];
-    this.chartLabels = [];
-    this.chartData.push({ data: [] });
-    this.chartData[idx].data = [];
     const data = this.totalData[this.selectedState]['dates'];
     const dates = Object.keys(this.totalData[this.selectedState].dates);
 
     for (let i = 0; i < this.selectedDataDays; i++) {
-      dateData.push({
-        "date": dates[dates.length - (i + 2)],
-        "data": data[Object.keys(data)[Object.keys(data).length - (i + 2)]]
-      });
-      this.chartLabels.push(dates[dates.length - (i + 2)]);
-      this.chartData[idx].data.push(data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam]);
-      this.getChartProps(field, dataParam, idx);
+
+
+      // let dataToPush = 0;
+      // if (dataParam === 'active') {
+      //   dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['confirmed'] -
+      //     data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['recovered'] -
+      //     data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['deceased'] -
+      //     (data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['other'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['other'] : 0);
+      // } else {
+      let dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam];
+      // }
+
+      if (field === 'delta') {
+        this.deltaChartData.data.push(dataToPush);
+        this.deltaChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
+      } else if (field === 'total') {
+        this.totalChartData.data.push(dataToPush);
+        this.totalChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
+      } else {
+        this.chartData.data.push(dataToPush);
+        this.chartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
+      }
+
+      this.getChartProps(field, dataParam);
     }
 
     let label = this.dataFields.filter(el => {
       return el.code === dataFields;
     });
-    this.chartData[idx].label = label && label.length > 0 ? label[0].name : '';
+
+    if (field === 'delta') {
+      this.chartType = 'bar';
+      this.deltaChartData.label = field + ' ' + dataParam;
+    } else if (field === 'total') {
+      // this.chartType = 'bar';
+      this.totalChartData.label = field + ' ' + dataParam;
+    } else {
+      this.chartType = 'line';
+      this.chartData.label = label && label.length > 0 ? label[0].name : '';
+    }
+
+    this.deltaChartData = Object.assign(this.deltaChartData);
+    console.log(this.deltaChartData.data.length);
+    this.totalChartData = Object.assign(this.totalChartData);
+    this.chartData = Object.assign(this.chartData);
   }
 
   // Get Chart Color and Labels
-  getChartProps(field, dataParam, idx) {
+  getChartProps(field, dataParam) {
     let bgColor = '';
     let borderColor = '';
     let hoverBgColor = '';
 
     switch (dataParam) {
       case 'confirmed':
-        bgColor = 'rgba(255, 99, 132, .2)';
+        bgColor = 'rgba(255, 99, 132, .1)';
         borderColor = 'rgba(255, 99, 132, 1)';
         hoverBgColor = 'rgba(255, 99, 132, .5)';
         break;
@@ -239,21 +244,82 @@ export class StateDataComponent implements OnInit {
         borderColor = 'rgba(54, 162, 235, 1)';
         hoverBgColor = 'rgba(54, 162, 235, .5)';
         break;
+
+      case 'active':
+        bgColor = 'rgba(0, 123, 255, .2)';
+        borderColor = 'rgba(0, 123, 255, 1)';
+        hoverBgColor = 'rgba(0, 123, 255, .5)';
+        break;
     }
 
-    this.chartData[idx].backgroundColor = bgColor;
-    this.chartData[idx].borderColor = borderColor;
-    this.chartData[idx].hoverBorderColor = borderColor;
-    this.chartData[idx].hoverBackgroundColor = hoverBgColor;
-    this.chartData[idx].borderWidth = 1;
+    this.deltaChartData.backgroundColor = bgColor;
+    this.deltaChartData.borderColor = borderColor;
+    this.deltaChartData.hoverBackgroundColor = hoverBgColor;
 
-    //  if (field === 'delta7' || field === 'total') {
-    //    this.barChartOptions.scales.yAxes[0].ticks.beginAtZero = false;
-    //  }
+    this.totalChartData.backgroundColor = bgColor;
+    this.totalChartData.borderColor = borderColor;
+    this.totalChartData.hoverBackgroundColor = hoverBgColor;
 
-    this.chartData = [...this.chartData];
-    this.chartOptions = Object.assign(this.barChartOptions);
-    this.chartType = Object.assign(this.chartType);
+    this.chartData.backgroundColor = bgColor;
+    this.chartData.borderColor = borderColor;
+    this.chartData.hoverBackgroundColor = hoverBgColor;
+  }
+
+  getFormattedDate(date) {
+    let month = date.split('-')[1];
+    let monthLabel = '';
+
+    switch (month) {
+      case "01": {
+        monthLabel = 'Jan';
+        break;
+      }
+      case "02": {
+        monthLabel = 'Feb';
+        break;
+      }
+      case "03": {
+        monthLabel = 'Mar';
+        break;
+      }
+      case "04": {
+        monthLabel = 'Apr';
+        break;
+      }
+      case "05": {
+        monthLabel = 'May';
+        break;
+      }
+      case "06": {
+        monthLabel = 'June';
+        break;
+      }
+      case "07": {
+        monthLabel = 'July';
+        break;
+      }
+      case "08": {
+        monthLabel = 'Aug';
+        break;
+      }
+      case "09": {
+        monthLabel = 'Sept';
+        break;
+      }
+      case "10": {
+        monthLabel = 'Oct';
+        break;
+      }
+      case "11": {
+        monthLabel = 'Nov';
+        break;
+      }
+      case "12": {
+        monthLabel = 'Dec';
+        break;
+      }
+    }
+    return date.split('-')[2] + ' ' + monthLabel;
   }
 
 }
@@ -268,12 +334,32 @@ export interface DataFields {
   code: string;
 }
 
-export interface ChartTypes {
-  name: string;
-  code: string;
-}
+// export interface ChartTypes {
+//   name: string;
+//   code: string;
+// }
 
 export interface DataDays {
   name: string;
   code: number;
+}
+
+export interface ChartOptions {
+  showBg: boolean;
+}
+
+export class ChartData {
+  "data": any[];
+  "backgroundColor": string;
+  "hoverBackgroundColor": string;
+  "borderColor": string;
+  "label": string;
+
+  constructor() {
+    this.data = [];
+    this.backgroundColor = '';
+    this.hoverBackgroundColor = '';
+    this.borderColor = '';
+    this.label = '';
+  }
 }
