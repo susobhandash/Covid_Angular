@@ -33,11 +33,16 @@ body {
     }
 }
 
-.kpi-container > *:not(.active-container) {
-    transition: all linear 0.2s;
+.kpi-container {
+    max-width: 500px;
+    margin   : 0 auto;
 
-    &:hover {
-        filter: brightness(0.5);
+    >*:not(.active-container) {
+        transition: all linear 0.2s;
+
+        &:hover {
+            filter: brightness(0.5);
+        }
     }
 }
 
