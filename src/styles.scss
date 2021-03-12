@@ -34,7 +34,7 @@ body {
 }
 
 .kpi-container {
-    max-width: 500px;
+    max-width: 550px;
     margin   : 0 auto;
 
     >*:not(.active-container) {
@@ -269,19 +269,19 @@ body {
 
 // Vaccine
 .vaccine-text {
-    color: rgba(54, 162, 235, .866667); //#9673b9
+    color: #fd7e14; //#9673b9
 }
 
 .vaccine-text-light {
-    color: rgba(54, 162, 235, .6);
+    color: rgba(255,193,7, .6);
 }
 
 .vaccine-bg-light {
-    background: rgba(54, 162, 235, .0627451);
+    background: rgba(255,193,7, .0627451);
 }
 
 .vaccine-bg {
-    background: rgba(54, 162, 235, 0.18);
+    background: rgba(255,193,7, 0.18);
 }
 
 

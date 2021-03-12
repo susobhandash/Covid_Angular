@@ -31,7 +31,7 @@
         titlecase}}</figcaption>
     <svg width="280" height="170" [ngClass]="{'line-chart': showAnimation}">
 
-        <polyline fill="none" [attr.stroke]="RGBAToHexA(chartData.borderColor)" stroke-width="3" [attr.points]="points"
+        <polyline fill="none" [attr.stroke]="RGBAToHexA(chartData.hoverBackgroundColor)" stroke-width="3" [attr.points]="points"
             *ngIf="showAnimation" />
 
         <g class="bar" [ngClass]="{'highlight-bar': idx === (barDataToRender.length-1)}"
@@ -40,8 +40,9 @@
             
             <rect [attr.height]="bar.data" [attr.width]="barDataToRender.length === 7 ? 30 : 8" [attr.y]="((100 - bar.data))+30" x="5" rx="3" ry="3"></rect>
 
-            <circle [attr.cx]="barDataToRender.length === 7 ? 35 : 8" [attr.cy]="(barDataToRender.length === 7 ? 130 : 50) - bar.pointData" r="2" [attr.stroke]="RGBAToHexA(bar.activeColor)"
-                stroke-width="1" [attr.fill]="RGBAToHexA(bar.color)" />
+            <circle [attr.cx]="barDataToRender.length === 7 ? 35 : 8" [attr.cy]="(barDataToRender.length === 7 ? 130 : 50) - bar.pointData" r="1" 
+                [attr.stroke]="RGBAToHexA(bar.activeColor)"
+                stroke-width="1" [attr.fill]="RGBAToHexA(bar.activeColor)" />
             
             <text class="bar-chart-data" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="idx < (barDataToRender.length/2) ? 8 : -13" [attr.y]="10"
                 dy=".35em">{{bar.actualData}}</text>

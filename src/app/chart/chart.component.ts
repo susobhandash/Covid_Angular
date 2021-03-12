@@ -59,7 +59,7 @@ export class ChartComponent implements OnChanges, OnInit {
               bgColor: this.chartData.hoverBackgroundColor,
               activeColor: this.chartData.borderColor,
               // pointData: data.length === 7 ? parseInt((el / (biggestElem/100)).toFixed()) : ((smallestElem - el)) + 10
-              pointData: data.length === 7 ? parseInt((el / (biggestElem/100)).toFixed()) : parseInt(((el - biggestElem)/biggestElem).toFixed()) - (data.length + 20 - i)
+              pointData: data.length === 7 ? parseInt((el / (biggestElem/100)).toFixed()) : parseInt(((el - biggestElem)/biggestElem).toFixed())
               // pointData: parseInt((el / (biggestElem/100)).toFixed()) - (data.length + 20 - i)
             }
           );

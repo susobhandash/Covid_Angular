@@ -25,6 +25,17 @@ export class StateDataComponent implements OnInit {
   selectedChartType = 'bar';
   selectedDataDays = 7;
 
+  // dataVars
+  totalConfirmed = 0;
+  deltaConfirmed = 0;
+  totalRecovered = 0;
+  deltaRecovered = 0;
+  totalDeceased = 0;
+  deltaDeceased = 0;
+  totalActive = 0;
+  deltaActive = 0;
+  totalVaccinated = 0;
+
   // Others
   date = '';
   dates = [];
@@ -159,6 +170,19 @@ export class StateDataComponent implements OnInit {
 
     const data = this.totalData[this.selectedState]['dates'];
     const dates = Object.keys(this.totalData[this.selectedState].dates);
+
+    let currentDayData = data[dates[dates.length-1]];
+
+    this.deltaConfirmed = currentDayData.delta.confirmed;
+    this.deltaRecovered = currentDayData.delta.recovered;
+    this.deltaDeceased = currentDayData.delta.deceased;
+    this.deltaActive = currentDayData.delta.confirmed - currentDayData.delta.recovered - currentDayData.delta.deceased - (currentDayData.delta.other ? currentDayData.delta.other : 0);
+
+    this.totalConfirmed = currentDayData.total.confirmed;
+    this.totalRecovered = currentDayData.total.recovered;
+    this.totalDeceased = currentDayData.total.deceased;
+    this.totalVaccinated = currentDayData.total.vaccinated;
+    this.totalActive = currentDayData.total.confirmed - currentDayData.total.recovered - currentDayData.total.deceased - (currentDayData.total.other ? currentDayData.total.other : 0);
 
     this.selectedDataDays = field === 'total' ? 30 : 7;
 

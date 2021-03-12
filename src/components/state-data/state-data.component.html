@@ -13,28 +13,45 @@
         <!-- <button (click)="selectedDelta = 'delta-recovered'; getStateData();">Recovered</button> -->
         <div class="w-50 pl-1 mb-1">
             <div class="text-center d-flex flex-row justify-around kpi-container">
-                <div class="active-container br-5 p-1"
-                    [ngClass]="selectedDelta === 'delta-active' ? 'active-bg' : 'active-bg-light'">
-                    <span class="delta active-text-light"><mat-icon>arrow_upward</mat-icon> 20</span>
-                    <div class="total active-text">123456</div>
+                <div class="active-container">
+                    <div class="mb-1 active-text">Active</div>
+                    <div class="br-5 p-1" [ngClass]="selectedDelta === 'delta-active' ? 'active-bg' : 'active-bg-light'">
+                        <span class="delta active-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaActive}}</span>
+                        <div class="total active-text">{{totalActive}}</div>
+                    </div>
                 </div>
-                <div class="confirmed-container br-5 p-1 c-p" 
-                    [ngClass]="selectedDelta === 'delta-confirmed' ? 'confirmed-bg' : 'confirmed-bg-light'"
-                    (click)="selectedDelta = 'delta-confirmed'; selectedTotal = 'total-confirmed'; getStateData();">
-                    <span class="delta confirmed-text-light"><mat-icon>arrow_upward</mat-icon> 20</span>
-                    <div class="total confirmed-text">123456</div>
+                <div class="confirmed-container">
+                    <div class="mb-1 confirmed-text">Confirm</div>
+                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-confirmed' ? 'confirmed-bg' : 'confirmed-bg-light'"
+                        (click)="selectedDelta = 'delta-confirmed'; selectedTotal = 'total-confirmed'; getStateData();">
+                        <span class="delta confirmed-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaConfirmed}}</span>
+                        <div class="total confirmed-text">{{totalConfirmed}}</div>
+                    </div>
                 </div>
-                <div class="recovered-container br-5 p-1 c-p"
-                    [ngClass]="selectedDelta === 'delta-recovered' ? 'recovered-bg' : 'recovered-bg-light'"
-                    (click)="selectedDelta = 'delta-recovered'; selectedTotal = 'total-recovered'; getStateData();">
-                    <span class="delta recovered-text-light"><mat-icon>arrow_upward</mat-icon> 20</span>
-                    <div class="total recovered-text">123456</div>
+                <div class="recovered-container">
+                    <div class="mb-1 recovered-text">Recover</div>
+                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-recovered' ? 'recovered-bg' : 'recovered-bg-light'"
+                        (click)="selectedDelta = 'delta-recovered'; selectedTotal = 'total-recovered'; getStateData();">
+                        <span class="delta recovered-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaRecovered}}</span>
+                        <div class="total recovered-text">{{totalRecovered}}</div>
+                    </div>
                 </div>
-                <div class="deceased-container br-5 p-1 c-p"
-                    [ngClass]="selectedDelta === 'delta-deceased' ? 'deceased-bg' : 'deceased-bg-light'"
-                    (click)="selectedDelta = 'delta-deceased'; selectedTotal = 'total-deceased'; getStateData();">
-                    <span class="delta deceased-text-light"><mat-icon>arrow_upward</mat-icon> 20</span>
-                    <div class="total deceased-text">123456</div>
+                <div class="deceased-container">
+                    <div class="mb-1 deceased-text">Recover</div>
+                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-deceased' ? 'deceased-bg' : 'deceased-bg-light'"
+                        (click)="selectedDelta = 'delta-deceased'; selectedTotal = 'total-deceased'; getStateData();">
+                        <span class="delta deceased-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaDeceased}}</span>
+                        <div class="total deceased-text">{{totalDeceased}}</div>
+                    </div>
+                </div>
+                <div class="vaccine-container">
+                    <div class="mb-1 vaccine-text">Vaccine</div>
+                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-vaccine' ? 'vaccine-bg' : 'vaccine-bg-light'">
+                        <span class="delta vaccine-text-light">
+                            <!-- <mat-icon>arrow_upward</mat-icon> -->
+                        </span>
+                        <div class="total vaccine-text">{{totalVaccinated}}</div>
+                    </div>
                 </div>
             </div>
         </div>
