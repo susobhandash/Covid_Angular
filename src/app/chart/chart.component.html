@@ -38,14 +38,14 @@
             [attr.transform]="getTranslateValue(idx)" *ngFor="let bar of barDataToRender; let idx = index;"
             transform="scale(1,-1) translate(0,-200)" [attr.fill]="'transparent'">
             
-            <rect [attr.height]="bar.data" width="30" [attr.y]="((100 - bar.data))+30" x="20" rx="3" ry="3"></rect>
+            <rect [attr.height]="bar.data" [attr.width]="barDataToRender.length === 7 ? 30 : 8" [attr.y]="((100 - bar.data))+30" x="5" rx="3" ry="3"></rect>
 
-            <circle [attr.cx]="35" [attr.cy]="130-bar.data" r="2" [attr.stroke]="RGBAToHexA(bar.activeColor)"
+            <circle [attr.cx]="barDataToRender.length === 7 ? 35 : 8" [attr.cy]="(barDataToRender.length === 7 ? 130 : 50) - bar.pointData" r="2" [attr.stroke]="RGBAToHexA(bar.activeColor)"
                 stroke-width="1" [attr.fill]="RGBAToHexA(bar.color)" />
             
-            <text class="bar-chart-data" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="8" [attr.y]="10"
+            <text class="bar-chart-data" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="idx < (barDataToRender.length/2) ? 8 : -13" [attr.y]="10"
                 dy=".35em">{{bar.actualData}}</text>
-            <text class="bar-chart-label" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="13" [attr.y]="130"
+            <text class="bar-chart-label" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="0" [attr.y]="130"
                 dy=".35em">{{bar.label}}</text>
         </g>
 

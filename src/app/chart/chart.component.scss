@@ -15,11 +15,11 @@ text.bar-chart-data {
 }
 
 .bar-chart {
-    display         : inline-block;
-    margin-right    : 0;
-    transition      : all .3s ease;
+    display            : inline-block;
+    margin-right       : 0;
+    transition         : all .3s ease;
     // background-color: #f7f9f9;
-    border-radius   : 5px;
+    border-radius      : 5px;
 
     .bar:hover,
     .bar:focus {
@@ -58,15 +58,16 @@ svg:hover {
 }
 
 .bar {
-    position   : relative;
-    transition : fill .3s ease;
-    cursor     : pointer;
+    position      : relative;
+    transition    : fill .3s ease;
+    cursor        : pointer;
     // font-family: Helvetica, sans-serif;
-    display    : inline-block;
+    display       : inline-block;
 
     rect {
         opacity   : 0.4;
         transition: all linear 0.2s;
+        // fill: rgba(0,0,0,0.1);
     }
 
     &.highlight-bar rect,
@@ -113,9 +114,16 @@ figcaption {
             display: none;
         }
 
-        &:hover > text:not(.title) {
-            opacity: 1;
-            display: block !important;
+        &:hover {
+            >text:not(.title) {
+                opacity: 1;
+                display: block !important;
+            }
+
+            circle {
+                fill        : #000;
+                stroke-width: 5;
+            }
         }
 
         &.highlight-bar text:not(.title) {

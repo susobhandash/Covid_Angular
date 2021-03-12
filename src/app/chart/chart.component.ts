@@ -43,7 +43,11 @@ export class ChartComponent implements OnChanges, OnInit {
       let labels = this.chartLabels.slice().reverse();
       let data = this.chartData.data.slice().reverse();
       let biggestElem = data.sort(function(a, b){return b-a})[0];
+      let smallestElem = data.sort(function(a, b){return b-a})[data.length - 1];
+      let diff = data.length === 7 ? 35 : 8;
+      
       data = this.chartData.data.slice().reverse();
+      
       data.forEach((el, i, a) => {
         if (el) {
           this.barDataToRender.push(
@@ -53,11 +57,14 @@ export class ChartComponent implements OnChanges, OnInit {
               label: labels[i],
               color: this.chartData.backgroundColor,
               bgColor: this.chartData.hoverBackgroundColor,
-              activeColor: this.chartData.borderColor
+              activeColor: this.chartData.borderColor,
+              // pointData: data.length === 7 ? parseInt((el / (biggestElem/100)).toFixed()) : ((smallestElem - el)) + 10
+              pointData: data.length === 7 ? parseInt((el / (biggestElem/100)).toFixed()) : parseInt(((el - biggestElem)/biggestElem).toFixed()) - (data.length + 20 - i)
+              // pointData: parseInt((el / (biggestElem/100)).toFixed()) - (data.length + 20 - i)
             }
           );
-
-          this.points = this.points + ((i * 35)+35) + ', ' + (130 - parseInt((el / (biggestElem/100)).toFixed())) + (i === (data.length-1) ? '' : ',');
+          console.log(el + ', ' + biggestElem + ', ' +(el - biggestElem)/biggestElem);
+          this.points = this.points + ((i * diff)+diff) + ', ' + ((data.length === 7 ? 130 : 50) - this.barDataToRender[i].pointData) + (i === (data.length-1) ? '' : ',');
         } else {
           this.barDataToRender.push(
             {
@@ -66,11 +73,12 @@ export class ChartComponent implements OnChanges, OnInit {
               label: 'NA',
               color: this.chartData.backgroundColor,
               bgColor: this.chartData.hoverBackgroundColor,
-              activeColor: this.chartData.borderColor
+              activeColor: this.chartData.borderColor,
+              pointData: 0
             }
           );
 
-          this.points = this.points + ((i * 35)+35) + ', ' + (100 - 0) + (i === (data.length-1) ? '' : ',');
+          this.points = this.points + ((i * diff)+diff) + ', ' + (100 - 0) + (i === (data.length-1) ? '' : ',');
         }
       });
 
@@ -81,7 +89,7 @@ export class ChartComponent implements OnChanges, OnInit {
   }
 
   getTranslateValue(idx) {
-    return 'translate(' + (idx * (35)) + ',0)';
+    return this.chartData.data.length === 7 ? 'translate(' + (idx * (35)) + ',0)' : 'translate(' + (idx * (8)) + ',0)';
   }
 
   RGBAToHexA(rgba) {

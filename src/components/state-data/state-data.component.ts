@@ -160,6 +160,8 @@ export class StateDataComponent implements OnInit {
     const data = this.totalData[this.selectedState]['dates'];
     const dates = Object.keys(this.totalData[this.selectedState].dates);
 
+    this.selectedDataDays = field === 'total' ? 30 : 7;
+
     for (let i = 0; i < this.selectedDataDays; i++) {
 
 
