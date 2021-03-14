@@ -79,7 +79,7 @@ svg:hover {
 
 figcaption {
     font-weight  : bold;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     text-align   : center;
 }
 
@@ -89,6 +89,7 @@ figcaption {
 .line-chart {
     padding-top  : 20px;
     border-radius: 5px;
+    padding-left: 15px;
 
     polyline {
         stroke-dasharray : 300.5px;

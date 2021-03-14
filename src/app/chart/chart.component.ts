@@ -63,14 +63,14 @@ export class ChartComponent implements OnChanges, OnInit {
               // pointData: parseInt((el / (biggestElem/100)).toFixed()) - (data.length + 20 - i)
             }
           );
-          console.log(el + ', ' + biggestElem + ', ' +(el - biggestElem)/biggestElem);
+          // console.log(el + ', ' + biggestElem + ', ' +(el - biggestElem)/biggestElem);
           this.points = this.points + ((i * diff)+diff) + ', ' + ((data.length === 7 ? 130 : 50) - this.barDataToRender[i].pointData) + (i === (data.length-1) ? '' : ',');
         } else {
           this.barDataToRender.push(
             {
               data: 0,
               actualData: 0,
-              label: 'NA',
+              label: labels[i] ? labels[i] : 'NA',
               color: this.chartData.backgroundColor,
               bgColor: this.chartData.hoverBackgroundColor,
               activeColor: this.chartData.borderColor,

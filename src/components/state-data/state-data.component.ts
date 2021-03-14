@@ -18,6 +18,7 @@ export class StateDataComponent implements OnInit {
   dataFields: DataFields[] = [];
   chartType: string = 'bar';
   dataDays: DataDays[] = [];
+  stateDistData:any;
 
   // Selecetd Variables for Dropdowns
   selectedState = 'MH';
@@ -50,6 +51,7 @@ export class StateDataComponent implements OnInit {
   public chartLegend = true;
   public chartData: ChartData = new ChartData();
 
+  // Delta Data
   public selectedDelta = 'delta-confirmed';
   public deltaChartOptions: ChartOptions = {
     showBg: true
@@ -57,6 +59,15 @@ export class StateDataComponent implements OnInit {
   public deltaChartData: ChartData = new ChartData();
   public deltaChartLabels: Label[] = [];
 
+  // Delta7 Data
+  public selectedDelta7 = 'delta7-confirmed';
+  public delta7ChartOptions: ChartOptions = {
+    showBg: true
+  }
+  public delta7ChartData: ChartData = new ChartData();
+  public delta7ChartLabels: Label[] = [];
+
+  // Total Data
   public selectedTotal = 'total-confirmed';
   public totalChartOptions: ChartOptions = {
     showBg: true
@@ -130,9 +141,33 @@ export class StateDataComponent implements OnInit {
   // Get all States' Districts' all data
   getStateDate() {
     this.data.getStatesDataByDistricts().subscribe(res => {
+      let statesData = res;
+      let states = Object.keys(statesData);
+      let selectedStateInfo = states.filter(el => {
+        return (statesData[el]['statecode'] === this.selectedState);
+      });
+      let distInfo = selectedStateInfo ? statesData[selectedStateInfo[0]] : undefined;
+      this.processDistData(distInfo);
+      // console.log(this.stateDistData);
       this.getTimeSeriesData();
     }, err => {
       console.log(err);
+    });
+  }
+
+  processDistData(distInfo) {
+    this.stateDistData = [];
+    let districts = Object.keys(distInfo['districtData']);
+    districts.forEach(el => {
+      this.stateDistData.push({
+        name: el,
+        active: distInfo['districtData'][el].active,
+        confirmed: distInfo['districtData'][el].confirmed,
+        deceased: distInfo['districtData'][el].deceased,
+        recovered: distInfo['districtData'][el].recovered,
+        delta: distInfo['districtData'][el].delta,
+        notes: distInfo['districtData'][el].notes
+      });
     });
   }
 
@@ -157,10 +192,18 @@ export class StateDataComponent implements OnInit {
     this.totalChartLabels = [];
 
     this.chartData.data = [];
+
     this.deltaChartData.data = [];
+    this.deltaChartLabels = [];
+
+    this.delta7ChartData.data = [];
+    this.delta7ChartLabels = [];
+    
     this.totalChartData.data = [];
+    this.totalChartLabels = [];
 
     this.creteChartData(this.selectedDelta);
+    this.creteChartData(this.selectedDelta7);
     this.creteChartData(this.selectedTotal);
   }
 
@@ -173,10 +216,11 @@ export class StateDataComponent implements OnInit {
 
     let currentDayData = data[dates[dates.length-1]];
 
-    this.deltaConfirmed = currentDayData.delta.confirmed;
-    this.deltaRecovered = currentDayData.delta.recovered;
-    this.deltaDeceased = currentDayData.delta.deceased;
-    this.deltaActive = currentDayData.delta.confirmed - currentDayData.delta.recovered - currentDayData.delta.deceased - (currentDayData.delta.other ? currentDayData.delta.other : 0);
+    this.deltaConfirmed = currentDayData.delta && currentDayData.delta.confirmed ? currentDayData.delta.confirmed : 0;
+    this.deltaRecovered = currentDayData.delta && currentDayData.delta.recovered ? currentDayData.delta.recovered : 0;
+    this.deltaDeceased = currentDayData.delta && currentDayData.delta.deceased ? currentDayData.delta.deceased : 0;
+    let deltaOther = currentDayData.delta && currentDayData.delta.other ? currentDayData.delta.other : 0
+    this.deltaActive = this.deltaConfirmed - this.deltaRecovered - this.deltaDeceased - deltaOther;
 
     this.totalConfirmed = currentDayData.total.confirmed;
     this.totalRecovered = currentDayData.total.recovered;
@@ -196,12 +240,16 @@ export class StateDataComponent implements OnInit {
       //     data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['deceased'] -
       //     (data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['other'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['other'] : 0);
       // } else {
-      let dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam];
+      let dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] : 0;
       // }
 
       if (field === 'delta') {
         this.deltaChartData.data.push(dataToPush);
         this.deltaChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
+      } else if (field === 'delta7') {
+        this.delta7ChartData.data.push(dataToPush);
+        // console.log(dates[dates.length - (i + 2) - (i*6)]);
+        this.delta7ChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2) - (i * 6)]));
       } else if (field === 'total') {
         this.totalChartData.data.push(dataToPush);
         this.totalChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
@@ -218,18 +266,21 @@ export class StateDataComponent implements OnInit {
     });
 
     if (field === 'delta') {
-      this.chartType = 'bar';
-      this.deltaChartData.label = field + ' ' + dataParam;
-    } else if (field === 'total') {
       // this.chartType = 'bar';
-      this.totalChartData.label = field + ' ' + dataParam;
+      this.deltaChartData.label = label && label.length > 0 ? label[0].name : '';
+    } else if (field === 'delta7') {
+      // this.chartType = 'bar';
+      this.delta7ChartData.label = label[0]['name'];
+    } else if (field === 'total') {
+      this.totalChartData.label = label && label.length > 0 ? label[0].name : '';
     } else {
       this.chartType = 'line';
       this.chartData.label = label && label.length > 0 ? label[0].name : '';
     }
 
     this.deltaChartData = Object.assign(this.deltaChartData);
-    console.log(this.deltaChartData.data.length);
+    this.delta7ChartData = Object.assign(this.delta7ChartData);
+    // console.log(this.deltaChartData.data.length);
     this.totalChartData = Object.assign(this.totalChartData);
     this.chartData = Object.assign(this.chartData);
   }
@@ -242,37 +293,37 @@ export class StateDataComponent implements OnInit {
 
     switch (dataParam) {
       case 'confirmed':
-        bgColor = 'rgba(255, 99, 132, .1)';
+        bgColor = 'rgba(255, 99, 132, .05)';
         borderColor = 'rgba(255, 99, 132, 1)';
         hoverBgColor = 'rgba(255, 99, 132, .5)';
         break;
 
       case 'recovered':
-        bgColor = 'rgba(75, 192, 192, .2)';
+        bgColor = 'rgba(75, 192, 192, .05)';
         borderColor = 'rgba(75, 192, 192, 1)';
         hoverBgColor = 'rgba(75, 192, 192, .5)';
         break;
 
       case 'deceased':
-        bgColor = 'rgba(201, 203, 207, .2)';
+        bgColor = 'rgba(201, 203, 207, .1)';
         borderColor = 'rgba(201, 203, 207, 1)';
         hoverBgColor = 'rgba(201, 203, 207, .5)';
         break;
 
       case 'tested':
-        bgColor = 'rgba(153, 102, 255, .2)';
+        bgColor = 'rgba(153, 102, 255, .05)';
         borderColor = 'rgba(153, 102, 255, 1)';
         hoverBgColor = 'rgba(153, 102, 255, .5)';
         break;
 
       case 'vaccinated':
-        bgColor = 'rgba(54, 162, 235, .2)';
-        borderColor = 'rgba(54, 162, 235, 1)';
-        hoverBgColor = 'rgba(54, 162, 235, .5)';
+        bgColor = 'rgba(255,193,7, .1)';
+        borderColor = 'rgba(255,193,7, 1)';
+        hoverBgColor = 'rgba(255,193,7, .5)';
         break;
 
       case 'active':
-        bgColor = 'rgba(0, 123, 255, .2)';
+        bgColor = 'rgba(0, 123, 255, .05)';
         borderColor = 'rgba(0, 123, 255, 1)';
         hoverBgColor = 'rgba(0, 123, 255, .5)';
         break;
@@ -281,6 +332,10 @@ export class StateDataComponent implements OnInit {
     this.deltaChartData.backgroundColor = bgColor;
     this.deltaChartData.borderColor = borderColor;
     this.deltaChartData.hoverBackgroundColor = hoverBgColor;
+
+    this.delta7ChartData.backgroundColor = bgColor;
+    this.delta7ChartData.borderColor = borderColor;
+    this.delta7ChartData.hoverBackgroundColor = hoverBgColor;
 
     this.totalChartData.backgroundColor = bgColor;
     this.totalChartData.borderColor = borderColor;

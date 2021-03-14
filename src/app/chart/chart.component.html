@@ -2,38 +2,43 @@
 <!-- {{chartData.data.length}} -->
 <!-- {{chartData.data.length}} -->
 <figure *ngIf="chartData && chartData.data.length > 0 && chartType === 'bar'">
-    <figcaption [style.color]="chartOptions && chartOptions.showBg ? chartData.borderColor : ''">{{chartData.label |
-        titlecase}}</figcaption>
+    <figcaption [style.color]="chartOptions && chartOptions.showBg ? chartData.borderColor : ''">
+        {{chartData.label | titlecase}}
+    </figcaption>
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" class="bar-chart"
-        width="280" height="170" aria-labelledby="title" role="img" *ngIf="showAnimation">
+        width="280" height="170" aria-labelledby="title" role="img" *ngIf="showAnimation"
+        [style.background]="RGBAToHexA(chartData.backgroundColor)">
 
         <!-- Bars -->
         <g class="bar" [ngClass]="{'highlight-bar': idx === (barDataToRender.length-1)}"
             [attr.transform]="getTranslateValue(idx)" *ngFor="let bar of barDataToRender; let idx = index;"
-            [attr.fill]="RGBAToHexA(bar.activeColor)" transform="scale(1,-1) translate(0,-200)">
-            <rect [attr.height]="bar.data > 0 ? bar.data : -1*bar.data" width="30"
-                [attr.y]="bar.data > 0 ? ((100 - bar.data)+30) : 130" x="20" rx="3" ry="3"
+            [attr.fill]="bar.data > 0 ? RGBAToHexA(bar.activeColor) : 'transparent'" transform="scale(1,-1) translate(0,-200)">
+            <rect [attr.height]="bar.data > 0 ? bar.data : 100" width="30"
+                [attr.y]="bar.data > 0 ? ((100 - bar.data)+30) : 30" x="20" rx="3" ry="3"
                 [style.stroke]="RGBAToHexA(bar.activeColor)" style="stroke-width: 0">
 
-                <animate attributeName="height" from="0" [attr.to]="bar.data" dur="0.3s" fill="freeze" />
-                <animate attributeName="y" [attr.from]="150" [attr.to]="(100 - bar.data)+30" dur="0.3s" fill="freeze" />
+                <animate attributeName="height" from="0" [attr.to]="bar.data > 0 ? bar.data : 100" dur="0.3s" fill="freeze" />
+                <animate attributeName="y" [attr.from]="150" [attr.to]="bar.data > 0 ? (100 - bar.data)+30 : 30" dur="0.3s" fill="freeze" />
             </rect>
-            <text class="bar-chart-data" [attr.x]="15" [attr.y]="bar.data > 0 ? 20 : 90"
+            <text class="bar-chart-data" [attr.x]="15" [attr.y]="20" [attr.fill]="RGBAToHexA(bar.activeColor)"
                 dy=".35em">{{bar.actualData}}</text>
-            <text class="bar-chart-label" [attr.x]="13" [attr.y]="bar.data > 0 ? 150 : 110"
+            <text class="bar-chart-label" [attr.x]="13" [attr.y]="150" [attr.fill]="RGBAToHexA(bar.activeColor)"
                 dy=".35em">{{bar.label}}</text>
         </g>
     </svg>
 </figure>
 
 <figure *ngIf="chartData && chartData.data.length > 0 && chartType === 'line'">
-    <figcaption [style.color]="chartOptions && chartOptions.showBg ? chartData.borderColor : ''">{{chartData.label |
-        titlecase}}</figcaption>
-    <svg width="280" height="170" [ngClass]="{'line-chart': showAnimation}">
+    <figcaption [style.color]="chartOptions && chartOptions.showBg ? chartData.borderColor : ''">
+        {{chartData.label | titlecase}}
+    </figcaption>
+    <svg width="280" height="170" [ngClass]="{'line-chart': showAnimation}" [style.background]="RGBAToHexA(chartData.backgroundColor)">
 
+        <!-- Line -->
         <polyline fill="none" [attr.stroke]="RGBAToHexA(chartData.hoverBackgroundColor)" stroke-width="3" [attr.points]="points"
             *ngIf="showAnimation" />
 
+        <!-- Rect and Circle and Text -->
         <g class="bar" [ngClass]="{'highlight-bar': idx === (barDataToRender.length-1)}"
             [attr.transform]="getTranslateValue(idx)" *ngFor="let bar of barDataToRender; let idx = index;"
             transform="scale(1,-1) translate(0,-200)" [attr.fill]="'transparent'">
@@ -44,9 +49,9 @@
                 [attr.stroke]="RGBAToHexA(bar.activeColor)"
                 stroke-width="1" [attr.fill]="RGBAToHexA(bar.activeColor)" />
             
-            <text class="bar-chart-data" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="idx < (barDataToRender.length/2) ? 8 : -13" [attr.y]="10"
+            <text class="bar-chart-data" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="idx < (barDataToRender.length/2) ? 0 : -35" [attr.y]="10"
                 dy=".35em">{{bar.actualData}}</text>
-            <text class="bar-chart-label" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="0" [attr.y]="130"
+            <text class="bar-chart-label" [attr.fill]="RGBAToHexA(bar.activeColor)" [attr.x]="idx < (barDataToRender.length/2) ? 0 : -10" [attr.y]="130"
                 dy=".35em">{{bar.label}}</text>
         </g>
 
