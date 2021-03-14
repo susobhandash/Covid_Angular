@@ -3,7 +3,7 @@
         <div class="w-33 d-flex align-end">
             <mat-form-field appearance="fill" class="w-100">
                 <mat-label>States</mat-label>
-                <mat-select [(ngModel)]="selectedState" name="states" (selectionChange)="getStateDate($event)">
+                <mat-select [(ngModel)]="selectedState" name="states" (selectionChange)="getStateDate()">
                     <mat-option *ngFor="let state of states" [value]="state.code">
                         {{state.name}}
                     </mat-option>
