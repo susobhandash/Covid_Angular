@@ -21,6 +21,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
 
 import { CovidDataService } from '../services/covid-data.service';
 import { CountryDataComponent } from '../components/country-data/country-data.component';
@@ -52,6 +54,7 @@ import { CommaSeparatorPipe } from '../common/pipes/comma-separator.pipe';
     MatInputModule,
     MatSortModule,
     MatSelectModule,
+    MatTooltipModule,
     ChartsModule
   ],
   providers: [CovidDataService],

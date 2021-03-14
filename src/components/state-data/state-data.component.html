@@ -108,7 +108,9 @@
                 </div>
                 <div class="active-bg-light active-text d-flex align-center pos-rel br-5" style="padding: 5px;" *ngIf="dist.notes">
                     <mat-icon>info</mat-icon>
-                    <div class="w-100 ellipsis" style="padding-left: 5px;">{{dist.notes}}</div>
+                    <div class="w-100 ellipsis" style="padding-left: 5px;"
+                    #tooltip="matTooltip" matTooltipPosition="right"
+                    [matTooltip]="dist.notes">{{dist.notes}}</div>
                 </div>
             </div>
             
