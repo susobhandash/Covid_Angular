@@ -91,7 +91,8 @@
                     <span class="active-text">{{dist?.active}}</span>
                     <span class="active-text pl-1 d-i-flex align-center">
                         <mat-icon *ngIf="(dist.delta && dist.delta.active) || (dist.delta.active == 0)">arrow_upward</mat-icon>{{dist?.delta?.active}}
-                        <div style="padding-left: 28px;">
+                        <div style="padding-left: 43px;" #tooltip="matTooltip" matTooltipPosition="right"
+                            matTooltip="As a % of Total Confirmed">
                             <app-pie-chart
                                 [total]="dist.confirmed"
                                 [prop]="dist.active"
@@ -105,7 +106,8 @@
                     <span class="recovered-text">{{dist?.recovered}}</span>
                     <span class="recovered-text pl-1 d-i-flex align-center">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.recovered}}
-                        <div style="padding-left: 5px;">
+                        <div style="padding-left: 20px;" #tooltip="matTooltip" matTooltipPosition="right"
+                            matTooltip="As a % of Total Confirmed">
                             <app-pie-chart
                                 [total]="dist.confirmed"
                                 [prop]="dist.recovered"
@@ -119,7 +121,8 @@
                     <span class="deceased-text">{{dist?.deceased}}</span>
                     <span class="deceased-text pl-1 d-i-flex align-center">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.deceased}}
-                        <div style="padding-left: 5px;">
+                        <div style="padding-left: 20px;" #tooltip="matTooltip" matTooltipPosition="right"
+                            matTooltip="As a % of Total Confirmed">
                             <app-pie-chart
                                 [total]="dist.confirmed"
                                 [prop]="dist.deceased"
