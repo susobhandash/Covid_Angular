@@ -8,7 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 
 // Chart
-import { ChartsModule } from 'ng2-charts';
+// import { ChartsModule } from 'ng2-charts';
 
 // Material
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -27,8 +27,9 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CovidDataService } from '../services/covid-data.service';
 import { CountryDataComponent } from '../components/country-data/country-data.component';
 import { StateDataComponent } from '../components/state-data/state-data.component';
-import { ChartComponent } from './chart/chart.component';
 import { CommaSeparatorPipe } from '../common/pipes/comma-separator.pipe';
+import { PieChartComponent } from '../common/components/pie-chart/pie-chart.component';
+import { ChartComponent } from '../common/components/chart/chart.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { CommaSeparatorPipe } from '../common/pipes/comma-separator.pipe';
     CountryDataComponent,
     StateDataComponent,
     CommaSeparatorPipe,
-    ChartComponent
+    ChartComponent,
+    PieChartComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,7 @@ import { CommaSeparatorPipe } from '../common/pipes/comma-separator.pipe';
     MatSortModule,
     MatSelectModule,
     MatTooltipModule,
-    ChartsModule
+    // ChartsModule
   ],
   providers: [CovidDataService],
   bootstrap: [AppComponent]

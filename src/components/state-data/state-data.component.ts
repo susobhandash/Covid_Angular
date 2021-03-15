@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CovidDataService } from '../../services/covid-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-// import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-// import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { Label } from 'ng2-charts';
 
 @Component({
@@ -83,8 +81,6 @@ export class StateDataComponent implements OnInit {
 
     this.selectedState = this.location.getState()['state'] ? this.location.getState()['state'] : 'MH';
 
-    // this.chartOptions = this.barChartOptions;
-
     // Date Dropdown value Init
     this.dataFields = [
       { name: 'Daily Confirmed', code: 'delta-confirmed' },
@@ -104,13 +100,6 @@ export class StateDataComponent implements OnInit {
       { name: 'Total Delta Vaccinated', code: 'total-vaccinated' },
     ];
     this.selectedDataFields[0] = this.dataFields[0].code;
-
-    // Chart Type Dropdown value Init
-    // this.chartType = [
-    //   { name: 'Bar', code: 'bar' },
-    //   { name: 'Line', code: 'line' },
-    //   { name: 'Pie', code: 'pie' }
-    // ];
 
     // Data Days Dropdown value Init
     this.dataDays = [
@@ -146,7 +135,7 @@ export class StateDataComponent implements OnInit {
       let selectedStateInfo = states.filter(el => {
         return (statesData[el]['statecode'] === this.selectedState);
       });
-      let distInfo = selectedStateInfo ? statesData[selectedStateInfo[0]] : undefined;
+      let distInfo = selectedStateInfo && selectedStateInfo.length > 0 ? statesData[selectedStateInfo[0]] : statesData['State Unassigned'];
       this.processDistData(distInfo);
       // console.log(this.stateDistData);
       this.getTimeSeriesData();
@@ -231,31 +220,20 @@ export class StateDataComponent implements OnInit {
     this.selectedDataDays = field === 'total' ? 30 : 7;
 
     for (let i = 0; i < this.selectedDataDays; i++) {
-
-
-      // let dataToPush = 0;
-      // if (dataParam === 'active') {
-      //   dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['confirmed'] -
-      //     data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['recovered'] -
-      //     data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['deceased'] -
-      //     (data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['other'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['other'] : 0);
-      // } else {
       let dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] : 0;
-      // }
 
       if (field === 'delta') {
         this.deltaChartData.data.push(dataToPush);
-        this.deltaChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
+        this.deltaChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 1)]));
       } else if (field === 'delta7') {
         this.delta7ChartData.data.push(dataToPush);
-        // console.log(dates[dates.length - (i + 2) - (i*6)]);
-        this.delta7ChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2) - (i * 6)]));
+        this.delta7ChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 1) - (i * 6)]));
       } else if (field === 'total') {
         this.totalChartData.data.push(dataToPush);
-        this.totalChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
+        this.totalChartLabels.push(this.getFormattedDate(dates[dates.length - (i + 1)]));
       } else {
         this.chartData.data.push(dataToPush);
-        this.chartLabels.push(this.getFormattedDate(dates[dates.length - (i + 2)]));
+        this.chartLabels.push(this.getFormattedDate(dates[dates.length - (i + 1)]));
       }
 
       this.getChartProps(field, dataParam);
@@ -414,11 +392,6 @@ export interface DataFields {
   name: string;
   code: string;
 }
-
-// export interface ChartTypes {
-//   name: string;
-//   code: string;
-// }
 
 export interface DataDays {
   name: string;
