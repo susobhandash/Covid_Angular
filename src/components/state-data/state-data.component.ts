@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CovidDataService } from '../../services/covid-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { Label } from 'ng2-charts';
+import { ChartDataSets, ChartOptions } from 'chart.js';
+import { Color, Label } from 'ng2-charts';
 
 @Component({
   selector: 'app-state-data',
@@ -40,9 +41,9 @@ export class StateDataComponent implements OnInit {
   dates = [];
   totalData = {};
 
-  // public chartOptions: ChartOptions;
+  // public LocalChartOptions: LocalChartOptions;
 
-  public chartOptions: ChartOptions = {
+  public chartOptions: LocalChartOptions = {
     showBg: true
   };
   public chartLabels: Label[] = [];
@@ -51,7 +52,7 @@ export class StateDataComponent implements OnInit {
 
   // Delta Data
   public selectedDelta = 'delta-confirmed';
-  public deltaChartOptions: ChartOptions = {
+  public deltaChartOptions: LocalChartOptions = {
     showBg: true
   }
   public deltaChartData: ChartData = new ChartData();
@@ -59,7 +60,7 @@ export class StateDataComponent implements OnInit {
 
   // Delta7 Data
   public selectedDelta7 = 'delta7-confirmed';
-  public delta7ChartOptions: ChartOptions = {
+  public delta7ChartOptions: LocalChartOptions = {
     showBg: true
   }
   public delta7ChartData: ChartData = new ChartData();
@@ -67,11 +68,45 @@ export class StateDataComponent implements OnInit {
 
   // Total Data
   public selectedTotal = 'total-confirmed';
-  public totalChartOptions: ChartOptions = {
+  public totalChartOptions: LocalChartOptions = {
     showBg: true
   }
   public totalChartData: ChartData = new ChartData();
   public totalChartLabels: Label[] = [];
+
+  // Monthly Data
+  monthlyChartDetails = {};
+  public monthlyChartOptions: LocalChartOptions = {
+    showBg: true
+  }
+  public monthlyChartData: ChartDataSets[] = [{
+    data: [],
+    label: 'Monthly Data'
+  }];
+  public monthlyChartLabels: Label[] = [];
+  public lineChartBgColor = '';
+  public lineChartColors: Color[] = [
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    },
+  ];
+  public lineChartOptions = {
+    responsive: true,
+    backgroundColor: '',
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false,
+        },
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false,
+        },
+      }]
+    }
+  }
 
   constructor(private data: CovidDataService, private activatedroute: ActivatedRoute, private router: Router, private location: Location) { }
 
@@ -165,15 +200,68 @@ export class StateDataComponent implements OnInit {
     this.data.getTimeSeriesData().subscribe(res => {
       if (res) {
         this.totalData = res;
-        this.getStateData();
+        this.getStateData(res);
       }
     }, err => {
       console.log(err);
     });
   }
 
+  // Monthly cumulatve data
+  getMonthlyData(res) {
+    let data = res['dates'];
+    let datesArr = Object.keys(data);
+    let cumulativeData = {};
+    // console.log(data);
+    datesArr.forEach(dt => {
+      let year = dt.split('-')[0];
+      let month = dt.split('-')[1];
+      let date = dt.split('-')[2];
+      // console.log(year +', '+ month +', '+ date);
+
+      if (cumulativeData[year+'-'+month] && cumulativeData[year+'-'+month]['confirmed']) {
+        cumulativeData[year+'-'+month]['confirmed'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['confirmed'] ? res['dates'][dt]['delta']['confirmed'] : 0))
+      } else {
+        cumulativeData[year+'-'+month] = {
+          'confirmed': [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['confirmed'] ? res['dates'][dt]['delta']['confirmed'] : 0)]
+        };
+      }
+
+      if (cumulativeData[year+'-'+month] && cumulativeData[year+'-'+month]['deceased']) {
+        cumulativeData[year+'-'+month]['deceased'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['deceased'] ? res['dates'][dt]['delta']['deceased'] : 0))
+      } else {
+        cumulativeData[year+'-'+month]['deceased'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['deceased'] ? res['dates'][dt]['delta']['deceased'] : 0)];
+      }
+
+      if (cumulativeData[year+'-'+month] && cumulativeData[year+'-'+month]['recovered']) {
+        cumulativeData[year+'-'+month]['recovered'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0))
+      } else {
+        cumulativeData[year+'-'+month]['recovered'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0)];
+      }
+
+      // console.log(cumulativeData);
+    });
+
+    this.getMonthlyChartData(cumulativeData);
+  }
+
+  getMonthlyChartData(cumulativeData) {
+    let keys = Object.keys(cumulativeData);
+    this.monthlyChartDetails = {};
+
+    keys.forEach(dt => {
+      this.monthlyChartDetails[dt] = {};
+      this.monthlyChartDetails[dt].confirmed = cumulativeData[dt]['confirmed'].reduce((a, b) => a + b, 0);
+      this.monthlyChartDetails[dt].deceased = cumulativeData[dt]['deceased'].reduce((a, b) => a + b, 0);
+      this.monthlyChartDetails[dt].recovered = cumulativeData[dt]['recovered'].reduce((a, b) => a + b, 0);
+      // console.log(this.monthlyChartDetails);
+    });
+
+    this.assignMetMonthlyData();
+  }
+
   // Get Selected State data for last 7 days for Selected State
-  getStateData(event = null) {
+  getStateData(data) {
     this.chartData = new ChartData();
 
     this.chartLabels = [];
@@ -194,6 +282,19 @@ export class StateDataComponent implements OnInit {
     this.creteChartData(this.selectedDelta);
     this.creteChartData(this.selectedDelta7);
     this.creteChartData(this.selectedTotal);
+
+    this.getMonthlyData(data[this.selectedState]);
+  }
+
+  assignMetMonthlyData() {
+    this.monthlyChartData[0].data = [];
+    this.monthlyChartLabels = [];
+    let monthlyKeys = Object.keys(this.monthlyChartDetails);
+    monthlyKeys.forEach(mnth => {
+      this.monthlyChartLabels.push(this.getFormattedDate(mnth, true));
+      this.monthlyChartData[0].data.push(this.monthlyChartDetails[mnth][this.selectedDelta.split('-')[1]]);
+    });
+    console.log(this.selectedDelta);
   }
 
   creteChartData(dataFields) {
@@ -319,12 +420,16 @@ export class StateDataComponent implements OnInit {
     this.totalChartData.borderColor = borderColor;
     this.totalChartData.hoverBackgroundColor = hoverBgColor;
 
+    this.lineChartColors[0].borderColor = borderColor;
+    this.lineChartColors[0].backgroundColor = hoverBgColor;
+    this.lineChartBgColor = bgColor;
+
     this.chartData.backgroundColor = bgColor;
     this.chartData.borderColor = borderColor;
     this.chartData.hoverBackgroundColor = hoverBgColor;
   }
 
-  getFormattedDate(date) {
+  getFormattedDate(date, datePresent = false) {
     let month = date.split('-')[1];
     let monthLabel = '';
 
@@ -378,7 +483,7 @@ export class StateDataComponent implements OnInit {
         break;
       }
     }
-    return date.split('-')[2] + ' ' + monthLabel;
+    return !datePresent ? date.split('-')[2] + ' ' + monthLabel : monthLabel + '/' + date.split('-')[0].substr(2,4);
   }
 
 }
@@ -398,7 +503,7 @@ export interface DataDays {
   code: number;
 }
 
-export interface ChartOptions {
+export interface LocalChartOptions {
   showBg: boolean;
 }
 

@@ -21,7 +21,7 @@ export class CountryDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.data.getCountryDataByStates().subscribe(res => {
-      console.log(res);
+      // console.log(res);
       if (res && res['statewise'] && res['statewise'].length > 0) {
         const result = Object.assign(res);
         this.bottomRow = result['statewise'].shift();

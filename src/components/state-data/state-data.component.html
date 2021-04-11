@@ -16,37 +16,49 @@
                 <div class="active-container">
                     <div class="mb-1 active-text">Active</div>
                     <div class="br-5 p-1" [ngClass]="selectedDelta === 'delta-active' ? 'active-bg' : ''">
-                        <span class="delta active-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaActive}}</span>
+                        <span class="delta active-text-light">
+                            <mat-icon>arrow_upward</mat-icon> {{deltaActive}}
+                        </span>
                         <div class="total active-text">{{totalActive}}</div>
                     </div>
                 </div>
                 <div class="confirmed-container">
                     <div class="mb-1 confirmed-text">Confirm</div>
-                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-confirmed' ? 'active-status confirmed-bg' : 'confirmed-bg-light'"
+                    <div class="br-5 p-1 c-p"
+                        [ngClass]="selectedDelta === 'delta-confirmed' ? 'active-status confirmed-bg' : 'confirmed-bg-light'"
                         (click)="selectedDelta = 'delta-confirmed'; selectedDelta7 = 'delta7-confirmed'; selectedTotal = 'total-confirmed'; getStateDate();">
-                        <span class="delta confirmed-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaConfirmed}}</span>
+                        <span class="delta confirmed-text-light">
+                            <mat-icon>arrow_upward</mat-icon> {{deltaConfirmed}}
+                        </span>
                         <div class="total confirmed-text">{{totalConfirmed}}</div>
                     </div>
                 </div>
                 <div class="recovered-container">
                     <div class="mb-1 recovered-text">Recover</div>
-                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-recovered' ? 'active-status recovered-bg' : 'recovered-bg-light'"
+                    <div class="br-5 p-1 c-p"
+                        [ngClass]="selectedDelta === 'delta-recovered' ? 'active-status recovered-bg' : 'recovered-bg-light'"
                         (click)="selectedDelta = 'delta-recovered'; selectedDelta7 = 'delta7-recovered'; selectedTotal = 'total-recovered'; getStateDate();">
-                        <span class="delta recovered-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaRecovered}}</span>
+                        <span class="delta recovered-text-light">
+                            <mat-icon>arrow_upward</mat-icon> {{deltaRecovered}}
+                        </span>
                         <div class="total recovered-text">{{totalRecovered}}</div>
                     </div>
                 </div>
                 <div class="deceased-container">
                     <div class="mb-1 deceased-text">Death</div>
-                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-deceased' ? 'active-status deceased-bg' : 'deceased-bg-light'"
+                    <div class="br-5 p-1 c-p"
+                        [ngClass]="selectedDelta === 'delta-deceased' ? 'active-status deceased-bg' : 'deceased-bg-light'"
                         (click)="selectedDelta = 'delta-deceased'; selectedDelta7 = 'delta7-deceased'; selectedTotal = 'total-deceased'; getStateDate();">
-                        <span class="delta deceased-text-light"><mat-icon>arrow_upward</mat-icon> {{deltaDeceased}}</span>
+                        <span class="delta deceased-text-light">
+                            <mat-icon>arrow_upward</mat-icon> {{deltaDeceased}}
+                        </span>
                         <div class="total deceased-text">{{totalDeceased}}</div>
                     </div>
                 </div>
                 <div class="vaccine-container">
                     <div class="mb-1 vaccine-text">Vaccine</div>
-                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-vaccinated' ? 'active-status vaccine-bg' : 'vaccine-bg-light'"
+                    <div class="br-5 p-1 c-p"
+                        [ngClass]="selectedDelta === 'delta-vaccinated' ? 'active-status vaccine-bg' : 'vaccine-bg-light'"
                         (click)="selectedDelta = 'delta-vaccinated'; selectedDelta7 = 'delta7-vaccinated'; selectedTotal = 'total-vaccinated'; getStateDate();">
                         <span class="delta vaccine-text-light">
                             <!-- <mat-icon>arrow_upward</mat-icon> -->
@@ -57,31 +69,28 @@
             </div>
         </div>
         <div class="chart-container w-33 text-center mt-1">
-            <app-chart 
-                [chartType]="'bar'"
-                [chartLabels]='deltaChartLabels'
-                [chartOptions]='deltaChartOptions'
-                [chartData]='deltaChartData'
-                [showLegend]='chartLegend'
-            ></app-chart>
+            <app-chart [chartType]="'bar'" [chartLabels]='deltaChartLabels' [chartOptions]='deltaChartOptions'
+                [chartData]='deltaChartData' [showLegend]='chartLegend'></app-chart>
         </div>
         <div class="chart-container pl-1 w-33 text-center mt-1">
-            <app-chart 
-                [chartType]="'bar'"
-                [chartLabels]='delta7ChartLabels'
-                [chartOptions]='delta7ChartOptions'
-                [chartData]='delta7ChartData'
-                [showLegend]='chartLegend'
-            ></app-chart>
+            <app-chart [chartType]="'bar'" [chartLabels]='delta7ChartLabels' [chartOptions]='delta7ChartOptions'
+                [chartData]='delta7ChartData' [showLegend]='chartLegend'></app-chart>
         </div>
-        <div class="chart-container pl-1 w-33 text-center mt-1">
-            <app-chart 
+        <div class="chart-container pl-1 w-33 text-center mt-1"
+            *ngIf="monthlyChartData && monthlyChartData[0].data.length > 0">
+            <app-chart *ngIf="selectedDelta === 'delta-vaccinated'"
                 [chartType]="'line'"
                 [chartLabels]='totalChartLabels'
                 [chartOptions]='totalChartOptions'
                 [chartData]='totalChartData'
                 [showLegend]='chartLegend'
             ></app-chart>
+            <div style="max-width: 350px; margin: 0 auto;" class="br-5 p-1" [style.background]="lineChartBgColor" *ngIf="selectedDelta !== 'delta-vaccinated'">
+                <canvas baseChart fillStyle="red" [datasets]="monthlyChartData" [labels]="monthlyChartLabels"
+                    [options]="lineChartOptions" [colors]="lineChartColors" [legend]="true" [chartType]="'line'"
+                    height="170">
+                </canvas>
+            </div>
         </div>
         <div class="w-100 p-1 pt-0 d-flex flex-wrap justify-around">
             <div class="dist-data" *ngFor="let dist of stateDistData">
@@ -89,63 +98,55 @@
                 <div class="d-flex align-center">
                     <span class="active-text pr-1">Active</span>
                     <span class="active-text">{{dist?.active}}</span>
-                    <span class="active-text pl-1 d-i-flex align-center">
-                        <mat-icon *ngIf="(dist.delta && dist.delta.active) || (dist.delta.active == 0)">arrow_upward</mat-icon>{{dist?.delta?.active}}
+                    <span class="active-text pl-1 d-i-flex align-center pos-rel">
+                        <mat-icon *ngIf="(dist.delta && dist.delta.active) || (dist.delta.active == 0)">arrow_upward
+                        </mat-icon>{{dist?.delta?.active}}
                         <div style="padding-left: 43px;" #tooltip="matTooltip" matTooltipPosition="right"
-                            matTooltip="As a % of Total Confirmed">
-                            <app-pie-chart
-                                [total]="dist.confirmed"
-                                [prop]="dist.active"
-                                [color]="'active'"
-                            ></app-pie-chart>
+                            matTooltip="As a % of Total Confirmed" class="pie-chart-holder">
+                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.active" [color]="'active'">
+                            </app-pie-chart>
                         </div>
                     </span>
                 </div>
                 <div class="d-flex align-center">
                     <span class="recovered-text pr-1">Recovered</span>
                     <span class="recovered-text">{{dist?.recovered}}</span>
-                    <span class="recovered-text pl-1 d-i-flex align-center">
+                    <span class="recovered-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.recovered}}
                         <div style="padding-left: 20px;" #tooltip="matTooltip" matTooltipPosition="right"
-                            matTooltip="As a % of Total Confirmed">
-                            <app-pie-chart
-                                [total]="dist.confirmed"
-                                [prop]="dist.recovered"
-                                [color]="'recovered'"
-                            ></app-pie-chart>
+                            matTooltip="As a % of Total Confirmed" class="pie-chart-holder">
+                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.recovered" [color]="'recovered'">
+                            </app-pie-chart>
                         </div>
                     </span>
                 </div>
                 <div class="d-flex align-center">
                     <span class="deceased-text pr-1">Deceased</span>
                     <span class="deceased-text">{{dist?.deceased}}</span>
-                    <span class="deceased-text pl-1 d-i-flex align-center">
+                    <span class="deceased-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.deceased}}
                         <div style="padding-left: 20px;" #tooltip="matTooltip" matTooltipPosition="right"
-                            matTooltip="As a % of Total Confirmed">
-                            <app-pie-chart
-                                [total]="dist.confirmed"
-                                [prop]="dist.deceased"
-                                [color]="'deceased'"
-                            ></app-pie-chart>
+                            matTooltip="As a % of Total Confirmed" class="pie-chart-holder">
+                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.deceased" [color]="'deceased'">
+                            </app-pie-chart>
                         </div>
                     </span>
                 </div>
                 <div class="d-flex align-center">
                     <span class="confirmed-text pr-1">Confirmed</span>
                     <span class="confirmed-text">{{dist?.confirmed}}</span>
-                    <span class="confirmed-text pl-1 d-i-flex align-center">
+                    <span class="confirmed-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.confirmed}}
                     </span>
                 </div>
-                <div class="active-bg-light active-text d-flex align-center pos-rel br-5" style="padding: 5px;" *ngIf="dist.notes">
+                <div class="active-bg-light active-text d-flex align-center pos-rel br-5" style="padding: 5px;"
+                    *ngIf="dist.notes">
                     <mat-icon>info</mat-icon>
-                    <div class="w-100 ellipsis" style="padding-left: 5px;"
-                    #tooltip="matTooltip" matTooltipPosition="right"
-                    [matTooltip]="dist.notes">{{dist.notes}}</div>
+                    <div class="w-100 ellipsis" style="padding-left: 5px;" #tooltip="matTooltip"
+                        matTooltipPosition="right" [matTooltip]="dist.notes">{{dist.notes}}</div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>

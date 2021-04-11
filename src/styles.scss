@@ -414,6 +414,11 @@ app-country-data {
     flex-direction: column;
 }
 
+.pie-chart-holder {
+    position: absolute;
+    right: -10px;
+}
+
 
 @media only screen and (max-width: 500px) {
     body {

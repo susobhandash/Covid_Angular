@@ -31,6 +31,8 @@ import { CommaSeparatorPipe } from '../common/pipes/comma-separator.pipe';
 import { PieChartComponent } from '../common/components/pie-chart/pie-chart.component';
 import { ChartComponent } from '../common/components/chart/chart.component';
 
+import { ChartsModule } from 'ng2-charts';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,7 +59,7 @@ import { ChartComponent } from '../common/components/chart/chart.component';
     MatSortModule,
     MatSelectModule,
     MatTooltipModule,
-    // ChartsModule
+    ChartsModule
   ],
   providers: [CovidDataService],
   bootstrap: [AppComponent]
