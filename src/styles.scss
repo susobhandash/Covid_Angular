@@ -54,6 +54,7 @@ body {
     padding         : 1rem;
     background-color: #f7f9f999;
     border-radius   : 5px;
+    box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
 
     >div {
         font-size: 14px;
@@ -415,10 +416,25 @@ app-country-data {
 }
 
 .pie-chart-holder {
-    position: absolute;
-    right: -10px;
+    padding-right: 10px;
 }
 
+.chart-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.monthly-chart {
+    box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+    max-width: 350px;
+    margin: 0px auto;
+    background: rgba(255, 99, 132, 0.05);
+}
+
+.active-status {
+    box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+}
 
 @media only screen and (max-width: 500px) {
     body {

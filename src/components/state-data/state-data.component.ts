@@ -17,7 +17,7 @@ export class StateDataComponent implements OnInit {
   dataFields: DataFields[] = [];
   chartType: string = 'bar';
   dataDays: DataDays[] = [];
-  stateDistData:any;
+  stateDistData: any;
 
   // Selecetd Variables for Dropdowns
   selectedState = 'MH';
@@ -81,10 +81,12 @@ export class StateDataComponent implements OnInit {
   }
   public monthlyChartData: ChartDataSets[] = [{
     data: [],
-    label: 'Monthly Data'
+    label: 'Monthly Data',
+    borderWidth: 1
   }];
   public monthlyChartLabels: Label[] = [];
   public lineChartBgColor = '';
+  public lineChartTextColor = '';
   public lineChartColors: Color[] = [
     {
       borderColor: 'black',
@@ -94,16 +96,30 @@ export class StateDataComponent implements OnInit {
   public lineChartOptions = {
     responsive: true,
     backgroundColor: '',
+    legend: {
+      display: false
+    },
+    elements: {
+      point: {
+        radius: 2
+      }
+    },
     scales: {
       xAxes: [{
         gridLines: {
           display: false,
         },
+        ticks: {
+          fontColor: ''
+        }
       }],
       yAxes: [{
         gridLines: {
           display: false,
         },
+        ticks: {
+          fontColor: ''
+        }
       }]
     }
   }
@@ -182,6 +198,7 @@ export class StateDataComponent implements OnInit {
   processDistData(distInfo) {
     this.stateDistData = [];
     let districts = Object.keys(distInfo['districtData']);
+    let districtData = [];
     districts.forEach(el => {
       this.stateDistData.push({
         name: el,
@@ -193,6 +210,15 @@ export class StateDataComponent implements OnInit {
         notes: distInfo['districtData'][el].notes
       });
     });
+    let param = this.selectedDelta.split('-')[1];
+    districtData = this.stateDistData.slice(0);
+    // console.log(districtData);
+    districtData.sort(function (a, b) {
+      return b[param] - a[param];
+    });
+
+    this.stateDistData = [...districtData];
+    // console.log(districtData);
   }
 
   // Get all States Data by Time Series
@@ -219,24 +245,24 @@ export class StateDataComponent implements OnInit {
       let date = dt.split('-')[2];
       // console.log(year +', '+ month +', '+ date);
 
-      if (cumulativeData[year+'-'+month] && cumulativeData[year+'-'+month]['confirmed']) {
-        cumulativeData[year+'-'+month]['confirmed'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['confirmed'] ? res['dates'][dt]['delta']['confirmed'] : 0))
+      if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['confirmed']) {
+        cumulativeData[year + '-' + month]['confirmed'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['confirmed'] ? res['dates'][dt]['delta']['confirmed'] : 0))
       } else {
-        cumulativeData[year+'-'+month] = {
+        cumulativeData[year + '-' + month] = {
           'confirmed': [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['confirmed'] ? res['dates'][dt]['delta']['confirmed'] : 0)]
         };
       }
 
-      if (cumulativeData[year+'-'+month] && cumulativeData[year+'-'+month]['deceased']) {
-        cumulativeData[year+'-'+month]['deceased'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['deceased'] ? res['dates'][dt]['delta']['deceased'] : 0))
+      if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['deceased']) {
+        cumulativeData[year + '-' + month]['deceased'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['deceased'] ? res['dates'][dt]['delta']['deceased'] : 0))
       } else {
-        cumulativeData[year+'-'+month]['deceased'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['deceased'] ? res['dates'][dt]['delta']['deceased'] : 0)];
+        cumulativeData[year + '-' + month]['deceased'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['deceased'] ? res['dates'][dt]['delta']['deceased'] : 0)];
       }
 
-      if (cumulativeData[year+'-'+month] && cumulativeData[year+'-'+month]['recovered']) {
-        cumulativeData[year+'-'+month]['recovered'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0))
+      if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['recovered']) {
+        cumulativeData[year + '-' + month]['recovered'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0))
       } else {
-        cumulativeData[year+'-'+month]['recovered'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0)];
+        cumulativeData[year + '-' + month]['recovered'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0)];
       }
 
       // console.log(cumulativeData);
@@ -275,7 +301,7 @@ export class StateDataComponent implements OnInit {
 
     this.delta7ChartData.data = [];
     this.delta7ChartLabels = [];
-    
+
     this.totalChartData.data = [];
     this.totalChartLabels = [];
 
@@ -294,7 +320,7 @@ export class StateDataComponent implements OnInit {
       this.monthlyChartLabels.push(this.getFormattedDate(mnth, true));
       this.monthlyChartData[0].data.push(this.monthlyChartDetails[mnth][this.selectedDelta.split('-')[1]]);
     });
-    console.log(this.selectedDelta);
+    // console.log(this.selectedDelta);
   }
 
   creteChartData(dataFields) {
@@ -304,7 +330,7 @@ export class StateDataComponent implements OnInit {
     const data = this.totalData[this.selectedState]['dates'];
     const dates = Object.keys(this.totalData[this.selectedState].dates);
 
-    let currentDayData = data[dates[dates.length-1]];
+    let currentDayData = data[dates[dates.length - 1]];
 
     this.deltaConfirmed = currentDayData.delta && currentDayData.delta.confirmed ? currentDayData.delta.confirmed : 0;
     this.deltaRecovered = currentDayData.delta && currentDayData.delta.recovered ? currentDayData.delta.recovered : 0;
@@ -423,6 +449,10 @@ export class StateDataComponent implements OnInit {
     this.lineChartColors[0].borderColor = borderColor;
     this.lineChartColors[0].backgroundColor = hoverBgColor;
     this.lineChartBgColor = bgColor;
+    this.lineChartTextColor = borderColor;
+    this.lineChartOptions.scales.xAxes[0].ticks.fontColor = borderColor;
+    this.lineChartOptions.scales.yAxes[0].ticks.fontColor = borderColor;
+    this.lineChartOptions = Object.assign(this.lineChartOptions);
 
     this.chartData.backgroundColor = bgColor;
     this.chartData.borderColor = borderColor;
@@ -483,7 +513,7 @@ export class StateDataComponent implements OnInit {
         break;
       }
     }
-    return !datePresent ? date.split('-')[2] + ' ' + monthLabel : monthLabel + '/' + date.split('-')[0].substr(2,4);
+    return !datePresent ? date.split('-')[2] + ' ' + monthLabel : monthLabel + '/' + date.split(' ')[0].substr(2, 4);
   }
 
 }

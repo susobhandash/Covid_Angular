@@ -15,7 +15,7 @@
             <div class="text-center d-flex flex-row justify-around kpi-container">
                 <div class="active-container">
                     <div class="mb-1 active-text">Active</div>
-                    <div class="br-5 p-1" [ngClass]="selectedDelta === 'delta-active' ? 'active-bg' : ''">
+                    <div class="br-5 p-1 c-p" [ngClass]="selectedDelta === 'delta-active' ? 'active-bg active-status' : ''" (click)="selectedDelta = 'delta-active'; getStateDate();">
                         <span class="delta active-text-light">
                             <mat-icon>arrow_upward</mat-icon> {{deltaActive}}
                         </span>
@@ -68,24 +68,27 @@
                 </div>
             </div>
         </div>
-        <div class="chart-container w-33 text-center mt-1">
+        <div class="chart-container w-33 text-center mt-1" *ngIf="selectedDelta !== 'delta-active'">
             <app-chart [chartType]="'bar'" [chartLabels]='deltaChartLabels' [chartOptions]='deltaChartOptions'
                 [chartData]='deltaChartData' [showLegend]='chartLegend'></app-chart>
         </div>
-        <div class="chart-container pl-1 w-33 text-center mt-1">
+        <div class="chart-container pl-1 w-33 text-center mt-1" *ngIf="selectedDelta !== 'delta-active'">
             <app-chart [chartType]="'bar'" [chartLabels]='delta7ChartLabels' [chartOptions]='delta7ChartOptions'
                 [chartData]='delta7ChartData' [showLegend]='chartLegend'></app-chart>
         </div>
         <div class="chart-container pl-1 w-33 text-center mt-1"
-            *ngIf="monthlyChartData && monthlyChartData[0].data.length > 0">
-            <app-chart *ngIf="selectedDelta === 'delta-vaccinated'"
-                [chartType]="'line'"
-                [chartLabels]='totalChartLabels'
-                [chartOptions]='totalChartOptions'
-                [chartData]='totalChartData'
-                [showLegend]='chartLegend'
-            ></app-chart>
-            <div style="max-width: 350px; margin: 0 auto;" class="br-5 p-1" [style.background]="lineChartBgColor" *ngIf="selectedDelta !== 'delta-vaccinated'">
+            *ngIf="monthlyChartData && monthlyChartData[0].data.length > 0 && selectedDelta !== 'delta-active'">
+            <app-chart *ngIf="selectedDelta === 'delta-vaccinated'" [chartType]="'line'"
+                [chartLabels]='totalChartLabels' [chartOptions]='totalChartOptions' [chartData]='totalChartData'
+                [showLegend]='chartLegend'></app-chart>
+            <div class="chart-title mb-1" [style.color]="lineChartTextColor">Monthly Data</div>
+            <div class="br-5 p-1 monthly-chart" [style.background]="lineChartBgColor"
+                *ngIf="selectedDelta !== 'delta-vaccinated'">
+                <!-- <div class="fb-share-button" data-href="https://covid-angular.susobhandash.vercel.app/states"
+                    data-layout="button" data-size="large">
+                    <a target="_blank" class="fb-xfbml-parse-ignore"
+                    href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcovid-angular.susobhandash.vercel.app%2Fstates&amp;src=sdkpreparse">Share</a>
+                </div> -->
                 <canvas baseChart fillStyle="red" [datasets]="monthlyChartData" [labels]="monthlyChartLabels"
                     [options]="lineChartOptions" [colors]="lineChartColors" [legend]="true" [chartType]="'line'"
                     height="170">
@@ -94,45 +97,49 @@
         </div>
         <div class="w-100 p-1 pt-0 d-flex flex-wrap justify-around">
             <div class="dist-data" *ngFor="let dist of stateDistData">
-                <div class="text-center info-text bold">{{dist.name}}</div>
-                <div class="d-flex align-center">
+                <div class="d-flex align-center justify-around info-text bold">
+                    <span>{{dist.name}}</span>
+                    <div class="d-flex">
+                        <div #tooltip="matTooltip" matTooltipPosition="right" matTooltip="As a % of Total Confirmed"
+                            class="pie-chart-holder">
+                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.active" [color]="'active'">
+                            </app-pie-chart>
+                        </div>
+                        <div #tooltip="matTooltip" matTooltipPosition="right" matTooltip="As a % of Total Confirmed"
+                            class="pie-chart-holder">
+                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.recovered" [color]="'recovered'">
+                            </app-pie-chart>
+                        </div>
+                        <div #tooltip="matTooltip" matTooltipPosition="right" matTooltip="As a % of Total Confirmed"
+                            class="pie-chart-holder">
+                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.deceased" [color]="'deceased'">
+                            </app-pie-chart>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-active'}">
                     <span class="active-text pr-1">Active</span>
                     <span class="active-text">{{dist?.active}}</span>
                     <span class="active-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon *ngIf="(dist.delta && dist.delta.active) || (dist.delta.active == 0)">arrow_upward
                         </mat-icon>{{dist?.delta?.active}}
-                        <div style="padding-left: 43px;" #tooltip="matTooltip" matTooltipPosition="right"
-                            matTooltip="As a % of Total Confirmed" class="pie-chart-holder">
-                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.active" [color]="'active'">
-                            </app-pie-chart>
-                        </div>
                     </span>
                 </div>
-                <div class="d-flex align-center">
+                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-recovered'}">
                     <span class="recovered-text pr-1">Recovered</span>
                     <span class="recovered-text">{{dist?.recovered}}</span>
                     <span class="recovered-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.recovered}}
-                        <div style="padding-left: 20px;" #tooltip="matTooltip" matTooltipPosition="right"
-                            matTooltip="As a % of Total Confirmed" class="pie-chart-holder">
-                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.recovered" [color]="'recovered'">
-                            </app-pie-chart>
-                        </div>
                     </span>
                 </div>
-                <div class="d-flex align-center">
+                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-deceased'}">
                     <span class="deceased-text pr-1">Deceased</span>
                     <span class="deceased-text">{{dist?.deceased}}</span>
                     <span class="deceased-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.deceased}}
-                        <div style="padding-left: 20px;" #tooltip="matTooltip" matTooltipPosition="right"
-                            matTooltip="As a % of Total Confirmed" class="pie-chart-holder">
-                            <app-pie-chart [total]="dist.confirmed" [prop]="dist.deceased" [color]="'deceased'">
-                            </app-pie-chart>
-                        </div>
                     </span>
                 </div>
-                <div class="d-flex align-center">
+                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-confirmed'}">
                     <span class="confirmed-text pr-1">Confirmed</span>
                     <span class="confirmed-text">{{dist?.confirmed}}</span>
                     <span class="confirmed-text pl-1 d-i-flex align-center pos-rel">
