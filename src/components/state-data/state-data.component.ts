@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { CovidDataService } from '../../services/covid-data.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { ChartDataSets, ChartOptions } from 'chart.js';
-import { Color, Label } from 'ng2-charts';
+import { ChartDataSets, ChartOptions, Chart } from 'chart.js';
+import { Color, Label, BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-state-data',
@@ -124,6 +124,8 @@ export class StateDataComponent implements OnInit {
     }
   }
 
+  @ViewChild(BaseChartDirective) private Chart: BaseChartDirective;
+
   constructor(private data: CovidDataService, private activatedroute: ActivatedRoute, private router: Router, private location: Location) { }
 
   ngOnInit(): void {
@@ -218,6 +220,8 @@ export class StateDataComponent implements OnInit {
     });
 
     this.stateDistData = [...districtData];
+    if (this.Chart)
+      this.Chart.update();
     // console.log(districtData);
   }
 

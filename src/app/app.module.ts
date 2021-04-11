@@ -22,6 +22,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 
 import { CovidDataService } from '../services/covid-data.service';
@@ -59,6 +60,7 @@ import { ChartsModule } from 'ng2-charts';
     MatSortModule,
     MatSelectModule,
     MatTooltipModule,
+    MatExpansionModule,
     ChartsModule
   ],
   providers: [CovidDataService],
