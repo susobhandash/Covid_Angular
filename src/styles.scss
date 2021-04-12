@@ -34,8 +34,10 @@ body {
 }
 
 .kpi-container {
-    max-width: 550px;
-    margin   : 0 auto;
+    max-width     : 550px;
+    margin        : 0 auto;
+    padding-top   : 10px;
+    padding-bottom: 10px;
 
     >div:not(.active-container)>div {
         transition: all linear 0.2s;
@@ -48,13 +50,13 @@ body {
 }
 
 .dist-data {
-    width           : 280px;
-    margin-right    : 1rem;
-    margin-bottom   : 1rem;
-    padding         : 1rem;
-    background-color: #f7f9f999;
-    border-radius   : 5px;
-    box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+    width              : 280px;
+    // margin-right    : 1rem;
+    margin-bottom      : 1rem;
+    padding            : 1rem;
+    background-color   : #f7f9f999;
+    border-radius      : 5px;
+    box-shadow         : 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
 
     >div {
         font-size: 14px;
@@ -420,20 +422,103 @@ app-country-data {
 }
 
 .chart-title {
-    font-weight: bold;
+    font-weight  : bold;
     margin-bottom: 10px;
-    text-align: center;
+    text-align   : center;
 }
 
 .monthly-chart {
     box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
-    max-width: 350px;
-    margin: 0px auto;
+    max-width : 350px;
+    margin    : 0px auto;
     background: rgba(255, 99, 132, 0.05);
 }
 
 .active-status {
     box-shadow: 0 2px 1px -1px rgb(0 0 0 / 20%), 0 1px 1px 0 rgb(0 0 0 / 14%), 0 1px 3px 0 rgb(0 0 0 / 12%);
+}
+
+
+// Dark Mode
+.mat-drawer-container {
+    &.darkMode {
+        background-color: rgba(0, 0, 0, .8);
+
+        .mat-expansion-panel {
+            color     : rgba(255, 255, 255, .87);
+            background: rgba(0, 0, 0, .87);
+
+            .mat-expansion-panel-header-title,
+            .mat-expansion-indicator::after {
+                color: rgba(255, 255, 255, .87);
+            }
+        }
+
+        .dist-data,
+        .kpi-container {
+            background   : rgba(0, 0, 0, .87);
+            border-radius: 5px;
+        }
+
+        mat-form-field {
+            .mat-form-field-flex {
+                background  : rgba(0, 0, 0, .87);
+                color       : #fff;
+                padding-left: 10px;
+
+                .mat-select-value,
+                .mat-select-arrow {
+                    color: rgba(255, 255, 255, .87);
+                }
+
+                .mat-form-field-label {
+                    color: rgba(255, 255, 255, .5);
+                }
+            }
+
+            .mat-form-field-appearance-fill .mat-form-field-underline::before,
+            .mat-form-field-appearance-fill .mat-form-field-underline::before,
+            .mat-form-field-underline,
+            &.mat-form-field.mat-focused .mat-form-field-ripple {
+                background-color: rgba(255, 255, 25, .42);
+            }
+        }
+
+        app-pie-chart svg circle:first-child {
+            fill: rgba(255, 99, 128, 0.9);
+        }
+
+        .active-status {
+            position: relative;
+
+            &::after {
+                content         : '';
+                position        : absolute;
+                top             : 0;
+                bottom          : 0;
+                left            : 0;
+                right           : 0;
+                background-color: #fff;
+                z-index         : -1;
+            }
+
+            &.active-bg {
+                background: rgba(0, 123, 255, 0.2);
+            }
+        }
+
+        .active-bg-light {
+            background: rgba(0, 123, 255, 0.1627451);
+        }
+
+        .mat-table {
+            background-color: #000;
+
+            .mat-header-cell {
+                color: rgba(255, 255, 255, 0.54)
+            }
+        }
+    }
 }
 
 @media only screen and (max-width: 500px) {
@@ -456,7 +541,7 @@ app-country-data {
         }
 
         .mat-expansion-panel-body {
-            > .d-flex {
+            >.d-flex {
                 flex-direction: column;
             }
         }

@@ -1,4 +1,4 @@
-<mat-drawer-container class="example-container" [hasBackdrop]="true">
+<mat-drawer-container class="example-container" [ngClass]="{'darkMode': darkMode}" [hasBackdrop]="true">
   <mat-drawer #drawer mode="over">
     <mat-selection-list #menus [multiple]="false" color="accent">
       <mat-list-option value="home" routerLink="home" routerLinkActive="active" color="accent" (click)="drawer.toggle()">
@@ -19,8 +19,9 @@
         </button>
         <span>Covid Stats</span>
         <span class="example-spacer"></span>
-        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon">
-          <mat-icon>dark_mode</mat-icon>
+        <button mat-icon-button class="example-icon favorite-icon" aria-label="Example icon-button with heart icon" (click)="darkMode = !darkMode">
+          <mat-icon *ngIf="!darkMode">dark_mode</mat-icon>
+          <mat-icon *ngIf="darkMode">light_mode</mat-icon>
         </button>
         <!-- <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
           <mat-icon>share</mat-icon>
