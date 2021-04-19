@@ -114,29 +114,26 @@
             </mat-expansion-panel>
         </mat-accordion>
 
-        <div class="w-100 p-1 pt-0 d-flex flex-wrap justify-between">
+        <div class="w-100 p-1 pt-0 d-flex flex-wrap justify-between dist-container">
             <div class="dist-data" *ngFor="let dist of stateDistData">
-                <div class="d-flex align-center justify-around info-text bold">
+                <div class="d-flex align-center justify-between info-text bold info-bg-light dist-title">
                     <span>{{dist.name}}</span>
                     <div class="d-flex">
-                        <div #tooltip="matTooltip" matTooltipPosition="right" matTooltip="As a % of Total Confirmed"
-                            class="pie-chart-holder">
+                        <div class="pie-chart-holder">
                             <app-pie-chart [total]="dist.confirmed" [prop]="dist.active" [color]="'active'">
                             </app-pie-chart>
                         </div>
-                        <div #tooltip="matTooltip" matTooltipPosition="right" matTooltip="As a % of Total Confirmed"
-                            class="pie-chart-holder">
+                        <div class="pie-chart-holder">
                             <app-pie-chart [total]="dist.confirmed" [prop]="dist.recovered" [color]="'recovered'">
                             </app-pie-chart>
                         </div>
-                        <div #tooltip="matTooltip" matTooltipPosition="right" matTooltip="As a % of Total Confirmed"
-                            class="pie-chart-holder">
+                        <div class="pie-chart-holder">
                             <app-pie-chart [total]="dist.confirmed" [prop]="dist.deceased" [color]="'deceased'">
                             </app-pie-chart>
                         </div>
                     </div>
                 </div>
-                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-active'}">
+                <div class="d-flex align-center" [ngClass]="{'bold active-bg-light': selectedDelta === 'delta-active'}">
                     <span class="active-text pr-1">Active</span>
                     <span class="active-text">{{dist?.active}}</span>
                     <span class="active-text pl-1 d-i-flex align-center pos-rel">
@@ -144,28 +141,28 @@
                         </mat-icon>{{dist?.delta?.active}}
                     </span>
                 </div>
-                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-recovered'}">
-                    <span class="recovered-text pr-1">Recovered</span>
-                    <span class="recovered-text">{{dist?.recovered}}</span>
-                    <span class="recovered-text pl-1 d-i-flex align-center pos-rel">
-                        <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.recovered}}
-                    </span>
-                </div>
-                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-deceased'}">
-                    <span class="deceased-text pr-1">Deceased</span>
-                    <span class="deceased-text">{{dist?.deceased}}</span>
-                    <span class="deceased-text pl-1 d-i-flex align-center pos-rel">
-                        <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.deceased}}
-                    </span>
-                </div>
-                <div class="d-flex align-center" [ngClass]="{'bold': selectedDelta === 'delta-confirmed'}">
+                <div class="d-flex align-center" [ngClass]="{'bold confirmed-bg-light': selectedDelta === 'delta-confirmed'}">
                     <span class="confirmed-text pr-1">Confirmed</span>
                     <span class="confirmed-text">{{dist?.confirmed}}</span>
                     <span class="confirmed-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.confirmed}}
                     </span>
                 </div>
-                <div class="active-bg-light active-text d-flex align-center pos-rel br-5" style="padding: 5px;"
+                <div class="d-flex align-center" [ngClass]="{'bold recovered-bg-light': selectedDelta === 'delta-recovered'}">
+                    <span class="recovered-text pr-1">Recovered</span>
+                    <span class="recovered-text">{{dist?.recovered}}</span>
+                    <span class="recovered-text pl-1 d-i-flex align-center pos-rel">
+                        <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.recovered}}
+                    </span>
+                </div>
+                <div class="d-flex align-center" [ngClass]="{'bold deceased-bg-light': selectedDelta === 'delta-deceased'}">
+                    <span class="deceased-text pr-1">Deceased</span>
+                    <span class="deceased-text">{{dist?.deceased}}</span>
+                    <span class="deceased-text pl-1 d-i-flex align-center pos-rel">
+                        <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.deceased}}
+                    </span>
+                </div>
+                <div class="active-bg-light active-text d-flex align-center pos-rel br-5 other-info" style="padding: 5px;"
                     *ngIf="dist.notes">
                     <mat-icon>info</mat-icon>
                     <div class="w-100 ellipsis" style="padding-left: 5px;" #tooltip="matTooltip"
