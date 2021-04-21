@@ -20,7 +20,7 @@
                 <animate attributeName="height" from="0" [attr.to]="bar.data > 0 ? bar.data : 100" dur="0.3s" fill="freeze" />
                 <animate attributeName="y" [attr.from]="150" [attr.to]="bar.data > 0 ? (100 - bar.data)+30 : 30" dur="0.3s" fill="freeze" />
             </rect>
-            <text class="bar-chart-data" [attr.x]="15" [attr.y]="20" [attr.fill]="RGBAToHexA(bar.activeColor)"
+            <text class="bar-chart-data" [attr.x]="5" [attr.y]="20" [attr.fill]="RGBAToHexA(bar.activeColor)"
                 dy=".35em">{{bar.actualData}}</text>
             <text class="bar-chart-label" [attr.x]="13" [attr.y]="150" [attr.fill]="RGBAToHexA(bar.activeColor)"
                 dy=".35em">{{bar.label}}</text>

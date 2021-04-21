@@ -139,16 +139,19 @@ export class StateDataComponent implements OnInit {
       { name: 'Daily Confirmed', code: 'delta-confirmed' },
       { name: 'Daily Deceased', code: 'delta-deceased' },
       { name: 'Daily Recovered', code: 'delta-recovered' },
+      { name: 'Daily Active', code: 'delta-active' },
       { name: 'Daily Tested', code: 'delta-tested' },
       { name: 'Daily Vaccinated', code: 'delta-vaccinated' },
       { name: 'Weekly Delta Confirmed', code: 'delta7-confirmed' },
       { name: 'Weekly Delta Deceased', code: 'delta7-deceased' },
       { name: 'Weekly Delta Recovered', code: 'delta7-recovered' },
+      { name: 'Weekly Delta Active', code: 'delta7-active' },
       { name: 'Weekly Delta Tested', code: 'delta7-tested' },
       { name: 'Weekly Delta Vaccinated', code: 'delta7-vaccinated' },
       { name: 'Total Confirmed', code: 'total-confirmed' },
       { name: 'Total Delta Deceased', code: 'total-deceased' },
       { name: 'Total Delta Recovered', code: 'total-recovered' },
+      { name: 'Total Delta Active', code: 'total-active' },
       { name: 'Total Delta Tested', code: 'total-tested' },
       { name: 'Total Delta Vaccinated', code: 'total-vaccinated' },
     ];
@@ -269,6 +272,12 @@ export class StateDataComponent implements OnInit {
         cumulativeData[year + '-' + month]['recovered'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0)];
       }
 
+      if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['vaccinated']) {
+        cumulativeData[year + '-' + month]['vaccinated'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated'] ? res['dates'][dt]['delta']['vaccinated'] : 0))
+      } else {
+        cumulativeData[year + '-' + month]['vaccinated'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated'] ? res['dates'][dt]['delta']['vaccinated'] : 0)];
+      }
+
       // console.log(cumulativeData);
     });
 
@@ -284,6 +293,10 @@ export class StateDataComponent implements OnInit {
       this.monthlyChartDetails[dt].confirmed = cumulativeData[dt]['confirmed'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].deceased = cumulativeData[dt]['deceased'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].recovered = cumulativeData[dt]['recovered'].reduce((a, b) => a + b, 0);
+      this.monthlyChartDetails[dt].vaccinated = cumulativeData[dt]['vaccinated'].reduce((a, b) => a + b, 0);
+      this.monthlyChartDetails[dt].active = (this.monthlyChartDetails[dt].confirmed ? this.monthlyChartDetails[dt].confirmed : 0) - 
+                                            (this.monthlyChartDetails[dt].recovered ? this.monthlyChartDetails[dt].recovered : 0) - 
+                                            (this.monthlyChartDetails[dt].deceased ? this.monthlyChartDetails[dt].deceased : 0);
       // console.log(this.monthlyChartDetails);
     });
 
@@ -351,7 +364,18 @@ export class StateDataComponent implements OnInit {
     this.selectedDataDays = field === 'total' ? 30 : 7;
 
     for (let i = 0; i < this.selectedDataDays; i++) {
-      let dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] : 0;
+      let dataToPush;
+      
+      if(dataParam !== 'active') {
+        dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] : 0;
+      } else {
+        let confirmedStats = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['confirmed'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['confirmed'] : 0;
+        let recoveredStats = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['recovered'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['recovered'] : 0;
+        let deceasedStats = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['deceased'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['deceased'] : 0;
+
+        dataToPush = confirmedStats - recoveredStats - deceasedStats;
+      }
+      
 
       if (field === 'delta') {
         this.deltaChartData.data.push(dataToPush);
@@ -517,7 +541,7 @@ export class StateDataComponent implements OnInit {
         break;
       }
     }
-    return !datePresent ? date.split('-')[2] + ' ' + monthLabel : monthLabel + '/' + date.split(' ')[0].substr(2, 4);
+    return !datePresent ? date.split('-')[2] + ' ' + monthLabel : monthLabel + '-' + date.split('-')[0].substr(2, 4);
   }
 
 }

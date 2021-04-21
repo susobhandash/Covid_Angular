@@ -17,7 +17,7 @@
                     <div class="mb-1 active-text">Active</div>
                     <div class="br-5 p-1 c-p"
                         [ngClass]="selectedDelta === 'delta-active' ? 'active-bg active-status' : ''"
-                        (click)="selectedDelta = 'delta-active'; getStateDate();">
+                        (click)="selectedDelta = 'delta-active'; selectedDelta7 = 'delta7-active'; selectedTotal = 'total-active'; getStateDate();">
                         <span class="delta active-text-light">
                             <mat-icon>arrow_upward</mat-icon> {{deltaActive}}
                         </span>
@@ -83,21 +83,20 @@
                 </mat-expansion-panel-header>
 
                 <div class="d-flex">
-                    <div class="chart-container w-33 text-center mt-1" *ngIf="selectedDelta !== 'delta-active'">
+                    <div class="chart-container w-33 text-center mt-1">
                         <app-chart [chartType]="'bar'" [chartLabels]='deltaChartLabels' [chartOptions]='deltaChartOptions'
                             [chartData]='deltaChartData' [showLegend]='chartLegend'></app-chart>
                     </div>
-                    <div class="chart-container pl-1 w-33 text-center mt-1" *ngIf="selectedDelta !== 'delta-active'">
+                    <div class="chart-container pl-1 w-33 text-center mt-1">
                         <app-chart [chartType]="'bar'" [chartLabels]='delta7ChartLabels' [chartOptions]='delta7ChartOptions'
                             [chartData]='delta7ChartData' [showLegend]='chartLegend'></app-chart>
                     </div>
-                    <div class="chart-container pl-1 w-33 text-center mt-1" *ngIf="selectedDelta !== 'delta-active'">
-                        <app-chart *ngIf="selectedDelta === 'delta-vaccinated'" [chartType]="'line'"
+                    <div class="chart-container pl-1 w-33 text-center mt-1">
+                        <!-- <app-chart *ngIf="selectedDelta === 'delta-vaccinated'" [chartType]="'line'"
                             [chartLabels]='totalChartLabels' [chartOptions]='totalChartOptions' [chartData]='totalChartData'
-                            [showLegend]='chartLegend'></app-chart>
-                        <div class="chart-title mb-1" [style.color]="lineChartTextColor" *ngIf="selectedDelta !== 'delta-vaccinated'">Monthly Data</div>
-                        <div class="br-5 p-1 monthly-chart" [style.background]="lineChartBgColor"
-                            [hidden]="selectedDelta == 'delta-vaccinated'">
+                            [showLegend]='chartLegend'></app-chart> -->
+                        <div class="chart-title mb-1" [style.color]="lineChartTextColor">Monthly Data</div>
+                        <div class="br-5 p-1 monthly-chart" [style.background]="lineChartBgColor">
                             <!-- <div class="fb-share-button" data-href="https://covid-angular.susobhandash.vercel.app/states"
                                 data-layout="button" data-size="large">
                                 <a target="_blank" class="fb-xfbml-parse-ignore"
