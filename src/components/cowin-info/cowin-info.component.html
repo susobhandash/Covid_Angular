@@ -1,0 +1,22 @@
+<div class="state-data-container pl-1 pr-1">
+    <div class="d-flex flex-wrap flex-row">
+        <div class="w-50 pr-1 d-flex">
+            <mat-form-field appearance="fill" class="w-100 pr-1">
+                <mat-label>Phone</mat-label>
+                <input matInput [(ngModel)]="phone">
+            </mat-form-field>
+            <div class="d-i-flex align-center">
+                <button mat-button color="accent" [disabled]="!phone" (click)="getOTP();">Get OTP</button>
+            </div>
+        </div>
+        <div class="w-50 pl-1 d-flex" *ngIf="phone">
+            <mat-form-field appearance="fill" class="w-100 pr-1">
+                <mat-label>OTP</mat-label>
+                <input matInput [(ngModel)]="otp">
+            </mat-form-field>
+            <div class="d-i-flex align-center">
+                <button mat-button color="accent" [disabled]="!otp" (click)="sha256(otp)">Validate OTP</button>
+            </div>
+        </div>
+    </div>
+</div>

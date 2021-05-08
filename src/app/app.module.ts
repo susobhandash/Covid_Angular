@@ -23,11 +23,13 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 
 import { CovidDataService } from '../services/covid-data.service';
 import { CountryDataComponent } from '../components/country-data/country-data.component';
 import { StateDataComponent } from '../components/state-data/state-data.component';
+import { CowinInfoComponent } from '../components/cowin-info/cowin-info.component';
 import { CommaSeparatorPipe } from '../common/pipes/comma-separator.pipe';
 import { PieChartComponent } from '../common/components/pie-chart/pie-chart.component';
 import { ChartComponent } from '../common/components/chart/chart.component';
@@ -41,7 +43,8 @@ import { ChartsModule } from 'ng2-charts';
     StateDataComponent,
     CommaSeparatorPipe,
     ChartComponent,
-    PieChartComponent
+    PieChartComponent,
+    CowinInfoComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +64,8 @@ import { ChartsModule } from 'ng2-charts';
     MatSelectModule,
     MatTooltipModule,
     MatExpansionModule,
-    ChartsModule
+    ChartsModule,
+    MatSnackBarModule
   ],
   providers: [CovidDataService],
   bootstrap: [AppComponent]
