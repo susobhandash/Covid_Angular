@@ -10,14 +10,13 @@ import { connectableObservableDescriptor } from 'rxjs/internal/observable/Connec
 })
 export class CowinInfoComponent implements OnInit {
 
-  phone: number;
-  otp: number;
-  txnId: string;
-  hashHex: string;
-  token: string;
   states: any[] = [];
   districts: any[] = [];
-  selectedStateId: number = 0;
+  selectedStateId: number;
+  selectedDistId: number;
+  findBy = 'pin';
+  pin: number = 425412;
+  sessions: any[] = [];
 
   constructor(private cowinService: CowinService, private _snackBar: MatSnackBar) { }
 
@@ -27,73 +26,36 @@ export class CowinInfoComponent implements OnInit {
 
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
-      duration: 2000,
+      duration: 3000,
     });
   }
 
-  getOTP() {
-    this.cowinService.getOTP(this.phone).subscribe(res => {
-      console.log(res);
-      if (res && res['txnId']) {
-        this.txnId = res['txnId'];
-        this.openSnackBar('Please enter OTP received on this number', 'Proceed');
-      }
-    }, err => {
-      console.log(err.error);
-      if(err.error.error) {
-        this.openSnackBar(err.error, 'Ok');
-      } else {
-        this.openSnackBar(err.error + '. Please wait for 3 minutes before trying again.', 'Ok');
-      }
+  // async sha256(message) {
+  //   // encode as UTF-8
+  //   const msgBuffer = new TextEncoder().encode(message);
 
-      this.phone = undefined;
-      this.otp = undefined;
-    });
-  }
+  //   // hash the message
+  //   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
 
-  async sha256(message) {
-    // encode as UTF-8
-    const msgBuffer = new TextEncoder().encode(message);
+  //   // convert ArrayBuffer to Array
+  //   const hashArray = Array.from(new Uint8Array(hashBuffer));
 
-    // hash the message
-    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+  //   // convert bytes to hex string
+  //   const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
 
-    // convert ArrayBuffer to Array
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
+  //   this.validateOTP(hashHex);
+  // }
 
-    // convert bytes to hex string
-    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
-
-    this.validateOTP(hashHex);
-  }
-
-  validateOTP(hashHex) {
-    let encodedOTP = hashHex;
-
-    let postObj = {
-      "otp": encodedOTP,
-      "txnId": this.txnId
-    };
-
-    this.cowinService.valiadteOTP(postObj).subscribe(res => {
-      console.log(res);
-      if (res && res['token']) {
-        this.token = res['token'];
-        this.openSnackBar('OTP matched', 'Ok');
-      }
-    }, err => {
-      console.log(err.error.error);
-      if (err.error.error) {
-        this.openSnackBar(err.error.error, 'Ok');
-      } else if (err.error) {
-        this.openSnackBar(err.error, 'Ok');
-      }
-    });
+  getFormattedTime(timeString) {
+    let H = +timeString.substr(0, 2);
+    let h = H % 12 || 12;
+    let ampm = (H < 12 || H === 24) ? "AM" : "PM";
+    return (h > 9 ? h : '0'+h) + timeString.substr(2, 3) + ampm;
   }
 
   getStates() {
     this.cowinService.getStates().subscribe(res => {
-      console.log(res);
+      // console.log(res);
       if (res && res['states']) {
         this.states = res['states'];
         this.selectedStateId = this.states[0]['state_id'];
@@ -110,13 +72,42 @@ export class CowinInfoComponent implements OnInit {
   }
 
   getDistricts() {
+    this.sessions = [];
     this.cowinService.getDistricts(this.selectedStateId).subscribe(res => {
-      console.log(res);
-      if(res && res['districts']) {
+      // console.log(res);
+      if (res && res['districts']) {
         this.districts = res['districts'];
       }
     }, err => {
       console.log(err);
+    });
+  }
+
+  getByPin() {
+    this.cowinService.findByPIN(this.pin).subscribe(res => {
+      console.log(res);
+      if (res) {
+        if (res['sessions'].length == 0) {
+          this.openSnackBar('No Data found for Today', 'Ok');
+          this.sessions = [];
+        } else if (res['sessions'].length > 0) {
+          this.sessions = res['sessions'];
+        }
+      }
+    });
+  }
+
+  getByDistrict() {
+    this.cowinService.findByDistrict(this.selectedDistId).subscribe(res => {
+      console.log(res);
+      if (res) {
+        if (res['sessions'].length == 0) {
+          this.openSnackBar('No Data found for Today', 'Ok');
+          this.sessions = [];
+        } else if (res['sessions'].length > 0) {
+          this.sessions = res['sessions'];
+        }
+      }
     });
   }
 

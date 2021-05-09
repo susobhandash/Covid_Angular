@@ -24,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatRadioModule } from '@angular/material/radio';
 
 
 import { CovidDataService } from '../services/covid-data.service';
@@ -65,7 +66,8 @@ import { ChartsModule } from 'ng2-charts';
     MatTooltipModule,
     MatExpansionModule,
     ChartsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatRadioModule
   ],
   providers: [CovidDataService],
   bootstrap: [AppComponent]

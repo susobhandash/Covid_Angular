@@ -1,6 +1,6 @@
 <div class="state-data-container pl-1 pr-1">
     <div class="d-flex flex-wrap flex-row">
-        <div class="w-50 pr-1 d-flex">
+        <!-- <div class="w-50 pr-1 d-flex">
             <mat-form-field appearance="fill" class="w-100 pr-1">
                 <mat-label>Phone</mat-label>
                 <input matInput [(ngModel)]="phone">
@@ -16,6 +16,79 @@
             </mat-form-field>
             <div class="d-i-flex align-center">
                 <button mat-button color="accent" [disabled]="!otp" (click)="sha256(otp)">Validate OTP</button>
+            </div>
+        </div> -->
+        <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" [(ngModel)]="findBy">
+            <mat-radio-button class="example-radio-button" color="accent" [value]="'pin'">
+                Find by PIN
+            </mat-radio-button>
+            <mat-radio-button class="example-radio-button" color="accent" [value]="'district'">
+                Find by District
+            </mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <div class="d-flex flex-wrap flex-row mt-1" *ngIf="findBy === 'pin'">
+        <div class="w-33 pr-1 d-flex">
+            <mat-form-field appearance="fill" class="w-100 pr-1">
+                <mat-label>PIN Code</mat-label>
+                <input matInput [(ngModel)]="pin">
+            </mat-form-field>
+            <div class="d-i-flex align-center">
+                <button mat-button color="accent" [disabled]="!pin" (click)="getByPin()">Validate OTP</button>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap flex-row mt-1" *ngIf="findBy === 'district'">
+        <div class="w-33 pr-1 d-flex">
+            <mat-form-field appearance="fill" class="w-100 pr-1">
+                <mat-label>Select State</mat-label>
+                <mat-select [(ngModel)]="selectedStateId" (selectionChange)="getDistricts()">
+                    <mat-option *ngFor="let state of states" [value]="state.state_id">{{state.state_name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+        <div class="w-33 pr-1 d-flex">
+            <mat-form-field appearance="fill" class="w-100 pr-1">
+                <mat-label>Select District</mat-label>
+                <mat-select [(ngModel)]="selectedDistId" (selectionChange)="getByDistrict()">
+                    <mat-option *ngFor="let dist of districts" [value]="dist.district_id">{{dist.district_name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap flex-row mt-1" *ngIf="sessions && sessions.length > 0">
+        <div class="w-100 session_info">
+            <div class="session_info_header d-flex w-100">
+                <div class="address">Address</div>
+                <div class="capacity">Capacity</div>
+                <div class="agelimit">Age Limit</div>
+                <div class="time">Time</div>
+                <div class="vaccine">Vaccine</div>
+                <div class="fee">Fee</div>
+                <div class="slots">Slots</div>
+            </div>
+            <div class="session_info_body d-flex" *ngFor="let session of sessions">
+                <div class="address">
+                    {{session.name}}, {{session.address}}, {{session.block_name}}, {{session.pincode}}
+                </div>
+                <div class="capacity">
+                    {{session.available_capacity}}
+                </div>
+                <div class="agelimit">
+                    {{session.min_age_limit}}+
+                </div>
+                <div class="time">
+                    {{getFormattedTime(session.from)}} - {{getFormattedTime(session.to)}}
+                </div>
+                <div class="vaccine">
+                    {{session.vaccine}}
+                </div>
+                <div class="fee">
+                    {{session.fee_type}} (Rs. {{session.fee}}/-)
+                </div>
+                <div class="slot">
+                    <div *ngFor="let slot of session.slots">{{slot}}</div>
+                </div>
             </div>
         </div>
     </div>

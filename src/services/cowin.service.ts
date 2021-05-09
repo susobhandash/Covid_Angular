@@ -12,33 +12,7 @@ export class CowinService {
     'Content-Type': 'application/json'
   });
 
-  stateHeader = new HttpHeaders({
-    'Content-Type': 'application/json'
-  });
-
   constructor(private http: HttpClient) { }
-
-  getOTP(mobNum) {
-    let url = this.cowinAPIUrl + '/v2/auth/public/generateOTP';
-    let body = {
-      'mobile': mobNum
-    };
-    let options = {
-      headers: this.headers
-    }
-
-    return this.http.post(url, body, options);
-  }
-
-  valiadteOTP(otp) {
-    let url = this.cowinAPIUrl + '/v2/auth/public/confirmOTP';
-    let body = otp;
-    let options = {
-      headers: this.headers
-    }
-
-    return this.http.post(url, body, options);
-  }
 
   getStates() {
     let url = this.cowinAPIUrl + '/v2/admin/location/states';
@@ -51,6 +25,20 @@ export class CowinService {
 
   getDistricts(stateId) {
     let url = this.cowinAPIUrl + '/v2/admin/location/districts/' + stateId;
+
+    return this.http.get(url);
+  }
+
+  findByPIN(pin) {
+    let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
+    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/findByPin?pincode='+ pin + '&date=' + date;
+
+    return this.http.get(url);
+  }
+
+  findByDistrict(distId) {
+    let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
+    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/findByDistrict?district_id='+ distId + '&date=' + date;
 
     return this.http.get(url);
   }

@@ -363,6 +363,10 @@ body {
 
 
 // Material
+.example-radio-button {
+    min-width: 300px;
+}
+
 .mat-drawer-container {
     background-color: #fff;
 }
@@ -420,6 +424,9 @@ mat-list-option.active {
     color           : #fff !important;
 }
 
+.mat-snack-bar-container {
+    background-color: rgba(0, 0, 0, .8);
+}
 
 // Components
 app-country-data {
@@ -453,11 +460,88 @@ app-country-data {
     margin-top: 5px;
 }
 
+.session_info {
+    .session_info_header {
+        font-weight: 600;
+        text-align : center;
+        padding    : 15px 5px;
+        background : #ff4081;
+        position   : sticky;
+        top        : 0;
+        color      : #fff;
+    }
+
+    .session_info_body {
+        padding    : 5px;
+        align-items: center;
+
+        &:nth-child(odd) {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .address {
+        width: 20%;
+    }
+
+    .capacity {
+        width     : 10%;
+        text-align: center;
+    }
+
+    .agelimit {
+        width     : 10%;
+        text-align: center;
+    }
+
+    .time {
+        width     : 20%;
+        text-align: center;
+    }
+
+    .vaccine {
+        width     : 10%;
+        text-align: center;
+    }
+
+    .fee {
+        width     : 10%;
+        text-align: center;
+    }
+
+    .slot {
+        width        : 20%;
+        margin-bottom: 5px;
+    }
+}
+
 
 // Dark Mode
 .mat-drawer-container {
     &.darkMode {
         background-color: rgba(0, 0, 0, .8);
+
+        .session_info {
+            color: #fff;
+
+            .session_info_header {
+                background: rgba(0, 0, 0, 1);
+            }
+
+            .session_info_body {
+                &:nth-child(odd) {
+                    background-color: rgba(0, 0, 0, 0.3);
+                }
+            }
+        }
+
+        .mat-radio-outer-circle {
+            border-color: rgba(255, 255, 255, .54);
+        }
+
+        .mat-radio-label-content {
+            color: #fff;
+        }
 
         .mat-expansion-panel {
             color     : rgba(255, 255, 255, .87);
@@ -579,6 +663,10 @@ app-country-data {
 
         .dist-container {
             justify-content: space-around;
+        }
+
+        .example-radio-button {
+            min-width: 170px;
         }
 
         // Material
