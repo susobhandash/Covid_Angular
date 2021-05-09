@@ -14,6 +14,7 @@ body {
 
 * {
     box-sizing: border-box;
+    transition: all linear 0.1s;
 }
 
 
@@ -263,6 +264,10 @@ body {
     color: rgba(0, 123, 255, 1);
 }
 
+.active-border {
+    border: 1px solid rgba(0, 123, 255, 1);
+}
+
 .active-text-light {
     color: rgba(0, 123, 255, .6);
 }
@@ -280,6 +285,10 @@ body {
     color: rgba(255, 99, 132, 1);
 }
 
+.confirmed-border {
+    border: 1px solid rgba(255, 99, 132, 1);
+}
+
 .confirmed-text-light {
     color: rgba(255, 99, 132, .6);
 }
@@ -295,6 +304,10 @@ body {
 // Recovered Color
 .recovered-text {
     color: rgba(75, 192, 192, 1);
+}
+
+.recovered-border {
+    border: 1px solid rgba(75, 192, 192, 1);
 }
 
 .recovered-text-light {
@@ -315,6 +328,10 @@ body {
     color: rgba(173, 173, 175, 1);
 }
 
+.deceased-border {
+    border: 1px solid rgba(173, 173, 175, 1);
+}
+
 .deceased-text-light {
     color: rgba(173, 173, 175, .6);
 }
@@ -332,6 +349,10 @@ body {
     color: rgba(153, 102, 255, .866667); //#9673b9
 }
 
+.info-border {
+    border: 1px solid rgba(153, 102, 255, .866667);
+}
+
 .info-text-light {
     color: rgba(153, 102, 255, .6);
 }
@@ -347,6 +368,10 @@ body {
 // Vaccine
 .vaccine-text {
     color: #fd7e14; //#9673b9
+}
+
+.vaccine-border {
+    border: 1px solid #fd7e14;
 }
 
 .vaccine-text-light {
@@ -476,45 +501,38 @@ app-country-data {
         align-items: center;
 
         &:nth-child(odd) {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: #f7f9f9;
         }
     }
 
-    .address {
-        width: 20%;
-    }
-
-    .capacity {
-        width     : 10%;
-        text-align: center;
-    }
-
-    .agelimit {
-        width     : 10%;
-        text-align: center;
-    }
-
-    .time {
-        width     : 20%;
-        text-align: center;
-    }
-
-    .vaccine {
-        width     : 10%;
-        text-align: center;
-    }
-
-    .fee {
-        width     : 10%;
-        text-align: center;
+    .center {
+        width: 30%;
     }
 
     .slot {
-        width        : 20%;
-        margin-bottom: 5px;
+        width     : 10%;
+        text-align: center;
+        padding   : 4px;
     }
 }
 
+.chip-container {
+    display        : flex;
+    flex-direction : column;
+    flex-wrap      : wrap;
+    justify-content: center;
+    align-items    : center;
+
+    .chip {
+        padding      : 4px 12px;
+        border-radius: 16px;
+        width        : auto;
+        margin-bottom: 5px;
+        display      : inline-flex;
+        font-size    : 13px;
+        font-weight  : 500;
+    }
+}
 
 // Dark Mode
 .mat-drawer-container {
@@ -530,7 +548,7 @@ app-country-data {
 
             .session_info_body {
                 &:nth-child(odd) {
-                    background-color: rgba(0, 0, 0, 0.3);
+                    background-color: rgba(0, 0, 0, 0.2);
                 }
             }
         }

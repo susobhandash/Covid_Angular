@@ -29,16 +29,16 @@ export class CowinService {
     return this.http.get(url);
   }
 
-  findByPIN(pin) {
-    let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
-    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/findByPin?pincode='+ pin + '&date=' + date;
+  findByPIN(pin, date) {
+    // let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
+    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/calendarByPin?pincode='+ pin + '&date=' + date;
 
     return this.http.get(url);
   }
 
-  findByDistrict(distId) {
-    let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
-    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/findByDistrict?district_id='+ distId + '&date=' + date;
+  findByDistrict(distId, date) {
+    // let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
+    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/calendarByDistrict?district_id='+ distId + '&date=' + date;
 
     return this.http.get(url);
   }

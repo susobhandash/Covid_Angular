@@ -17,11 +17,23 @@ export class CowinInfoComponent implements OnInit {
   findBy = 'pin';
   pin: number = 425412;
   sessions: any[] = [];
+  dates = [];
+  centers = [];
 
   constructor(private cowinService: CowinService, private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.getStates();
+
+    for (let i = 0; i < 7; i++) {
+      let today = new Date();
+      let nextDate = new Date(today);
+      let dateToPush = nextDate.setDate(today.getDate() + i);
+      this.dates.push(
+        new Date(dateToPush).toLocaleDateString('en-GB').replace(/\//g, "-")
+      );
+      today = new Date();
+    }
   }
 
   openSnackBar(message: string, action: string) {
@@ -50,7 +62,7 @@ export class CowinInfoComponent implements OnInit {
     let H = +timeString.substr(0, 2);
     let h = H % 12 || 12;
     let ampm = (H < 12 || H === 24) ? "AM" : "PM";
-    return (h > 9 ? h : '0'+h) + timeString.substr(2, 3) + ampm;
+    return (h > 9 ? h : '0' + h) + timeString.substr(2, 3) + ampm;
   }
 
   getStates() {
@@ -72,7 +84,7 @@ export class CowinInfoComponent implements OnInit {
   }
 
   getDistricts() {
-    this.sessions = [];
+    this.centers = [];
     this.cowinService.getDistricts(this.selectedStateId).subscribe(res => {
       // console.log(res);
       if (res && res['districts']) {
@@ -84,28 +96,49 @@ export class CowinInfoComponent implements OnInit {
   }
 
   getByPin() {
-    this.cowinService.findByPIN(this.pin).subscribe(res => {
-      console.log(res);
-      if (res) {
-        if (res['sessions'].length == 0) {
-          this.openSnackBar('No Data found for Today', 'Ok');
-          this.sessions = [];
-        } else if (res['sessions'].length > 0) {
-          this.sessions = res['sessions'];
+    this.centers = [];
+
+    // this.dates.forEach(el => {
+    //   this.cowinService.findByPIN(this.pin, el).subscribe(res => {
+    //     if (res) {
+    //       console.log(res['centers']);
+    //     }
+    //   });
+    // });
+
+    this.cowinService.findByPIN(this.pin, this.dates[0]).subscribe(res => {
+      if (res && res['centers']) {
+        console.log(res['centers']);
+        this.centers = res['centers'];
+
+        if(res['centers'].length === 0) {
+          this.openSnackBar('No Data Available', 'Ok');
         }
+      } else {
+        this.openSnackBar('No Data Available', 'Ok');
       }
     });
   }
 
   getByDistrict() {
-    this.cowinService.findByDistrict(this.selectedDistId).subscribe(res => {
+    this.centers = [];
+
+    this.cowinService.findByDistrict(this.selectedDistId, this.dates[0]).subscribe(res => {
       console.log(res);
-      if (res) {
-        if (res['sessions'].length == 0) {
-          this.openSnackBar('No Data found for Today', 'Ok');
-          this.sessions = [];
-        } else if (res['sessions'].length > 0) {
-          this.sessions = res['sessions'];
+      // if (res) {
+      //   if (res['sessions'].length == 0) {
+      //     this.openSnackBar('No Data found for Today', 'Ok');
+      //     this.sessions = [];
+      //   } else if (res['sessions'].length > 0) {
+      //     this.sessions = res['sessions'];
+      //   }
+      // }
+      if (res && res['centers']) {
+        console.log(res['centers']);
+        this.centers = res['centers'];
+        
+        if(res['centers'].length === 0) {
+          this.openSnackBar('No Data Available', 'Ok');
         }
       }
     });
