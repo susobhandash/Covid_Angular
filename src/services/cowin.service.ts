@@ -31,15 +31,41 @@ export class CowinService {
 
   findByPIN(pin, date) {
     // let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
-    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/calendarByPin?pincode='+ pin + '&date=' + date;
+    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/calendarByPin?pincode=' + pin + '&date=' + date;
 
     return this.http.get(url);
   }
 
   findByDistrict(distId, date) {
     // let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
-    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/calendarByDistrict?district_id='+ distId + '&date=' + date;
+    let url = this.cowinAPIUrl + '/v2/appointment/sessions/public/calendarByDistrict?district_id=' + distId + '&date=' + date;
 
     return this.http.get(url);
   }
+
+  getCertificate(refId, auth_token) {
+    // let date = new Date().toLocaleDateString('en-GB').replace(/\//g, "-");
+    let url = this.cowinAPIUrl + '/v2/registration/certificate/public/download?beneficiary_reference_id=' + refId;
+    const header = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth_token}`
+    });
+    let options = { headers: header};
+
+    return this.http.get(url, options);
+  }
+
+  getOTP(body) {
+    let url = this.cowinAPIUrl + '/v2/auth/public/generateOTP';
+
+    return this.http.post(url, body);
+  }
+
+  validateOTP(body) {
+    let url = this.cowinAPIUrl + '/v2/auth/public/confirmOTP';
+
+    return this.http.post(url, body);
+  }
+
+
 }

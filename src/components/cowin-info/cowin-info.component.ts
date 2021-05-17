@@ -19,6 +19,11 @@ export class CowinInfoComponent implements OnInit {
   sessions: any[] = [];
   dates = [];
   centers = [];
+  refId = 7261474852688;
+  phone:number;
+  txnId: string;
+  otp: number;
+  token: string;
 
   constructor(private cowinService: CowinService, private _snackBar: MatSnackBar) { }
 
@@ -42,21 +47,34 @@ export class CowinInfoComponent implements OnInit {
     });
   }
 
-  // async sha256(message) {
-  //   // encode as UTF-8
-  //   const msgBuffer = new TextEncoder().encode(message);
+  async sha256(message) {
+    // encode as UTF-8
+    const msgBuffer = new TextEncoder().encode(message);
 
-  //   // hash the message
-  //   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    // hash the message
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
 
-  //   // convert ArrayBuffer to Array
-  //   const hashArray = Array.from(new Uint8Array(hashBuffer));
+    // convert ArrayBuffer to Array
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
 
-  //   // convert bytes to hex string
-  //   const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+    // convert bytes to hex string
+    const hashHex = hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
 
-  //   this.validateOTP(hashHex);
-  // }
+    this.validateOTP(hashHex);
+  }
+
+  validateOTP(hashHex) {
+    let body = {
+      "otp": hashHex,
+      "txnId": this.txnId
+    };
+
+    this.cowinService.validateOTP(body).subscribe(res => {
+      if (res && res['token']) {
+        this.token = res['token'];
+      }
+    });
+  }
 
   getFormattedTime(timeString) {
     let H = +timeString.substr(0, 2);
@@ -140,6 +158,25 @@ export class CowinInfoComponent implements OnInit {
         if(res['centers'].length === 0) {
           this.openSnackBar('No Data Available', 'Ok');
         }
+      }
+    });
+  }
+
+  getCertificate() {
+    this.cowinService.getCertificate(this.refId, this.token).subscribe(res => {
+      console.log(res);
+    });
+  }
+
+  getOTP() {
+    let body = {
+      "mobile": this.phone
+    };
+
+    this.cowinService.getOTP(body).subscribe(res => {
+      console.log(res);
+      if (res && res['txnId']) {
+        this.txnId = res['txnId'];
       }
     });
   }

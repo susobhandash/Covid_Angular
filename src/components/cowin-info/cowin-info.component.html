@@ -1,99 +1,144 @@
-<div class="state-data-container pl-1 pr-1">
-    <div class="d-flex flex-wrap flex-row">
-        <!-- <div class="w-50 pr-1 d-flex">
-            <mat-form-field appearance="fill" class="w-100 pr-1">
-                <mat-label>Phone</mat-label>
-                <input matInput [(ngModel)]="phone">
-            </mat-form-field>
-            <div class="d-i-flex align-center">
-                <button mat-button color="accent" [disabled]="!phone" (click)="getOTP();">Get OTP</button>
-            </div>
-        </div>
-        <div class="w-50 pl-1 d-flex" *ngIf="phone">
-            <mat-form-field appearance="fill" class="w-100 pr-1">
-                <mat-label>OTP</mat-label>
-                <input matInput [(ngModel)]="otp">
-            </mat-form-field>
-            <div class="d-i-flex align-center">
-                <button mat-button color="accent" [disabled]="!otp" (click)="sha256(otp)">Validate OTP</button>
-            </div>
-        </div> -->
-        <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group" [(ngModel)]="findBy">
-            <mat-radio-button class="example-radio-button" color="accent" [value]="'pin'">
-                Find by PIN
-            </mat-radio-button>
-            <mat-radio-button class="example-radio-button" color="accent" [value]="'district'">
-                Find by District
-            </mat-radio-button>
-        </mat-radio-group>
-    </div>
-    <div class="d-flex flex-wrap flex-row mt-1" *ngIf="findBy === 'pin'">
-        <div class="w-33 pr-1 d-flex">
-            <mat-form-field appearance="fill" class="w-100 pr-1">
-                <mat-label>PIN Code</mat-label>
-                <input matInput [(ngModel)]="pin">
-            </mat-form-field>
-            <div class="d-i-flex align-center">
-                <button mat-button color="accent" [disabled]="!pin" (click)="getByPin()">Validate OTP</button>
-            </div>
-        </div>
-    </div>
-    <div class="d-flex flex-wrap flex-row mt-1" *ngIf="findBy === 'district'">
-        <div class="w-33 pr-1 d-flex">
-            <mat-form-field appearance="fill" class="w-100 pr-1">
-                <mat-label>Select State</mat-label>
-                <mat-select [(ngModel)]="selectedStateId" (selectionChange)="getDistricts(); selectedDistId = 0;" [disabled]="!states && states.length == 0">
-                    <mat-option *ngFor="let state of states" [value]="state.state_id">{{state.state_name}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-        <div class="w-33 pr-1 d-flex">
-            <mat-form-field appearance="fill" class="w-100 pr-1">
-                <mat-label>Select District</mat-label>
-                <mat-select [(ngModel)]="selectedDistId" (selectionChange)="getByDistrict()" [disabled]="!states && states.length == 0 && !selectedDistId">
-                    <mat-option *ngFor="let dist of districts" [value]="dist.district_id">{{dist.district_name}}
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
-        </div>
-    </div>
-    <div class="d-flex flex-wrap flex-row mt-1" *ngIf="centers && centers.length > 0">
-        <div class="w-100 session_info">
-            <div class="session_info_header d-flex w-100">
-                <div class="center">Address</div>
-                <div class="slot" *ngFor="let date of dates">{{date}}</div>
-            </div>
-            <div class="session_info_body d-flex" *ngFor="let center of centers">
-                <div class="center">
-                    <div>{{center.name}}</div>
-                    <div>{{center.address}}</div>
-                    <div>{{center.block_name}}</div>
-                    <div>{{center.pincode}}</div>
-                </div>
-                <div class="slot" *ngFor="let date of dates; let idx = index;">
-                    <div *ngIf="center.sessions[idx]" class="chip-container">
-                        <div class="chip" 
-                            [ngClass]="{'recovered-border recovered-bg-light recovered-text': center.sessions[idx]['available_capacity'] > 10, 'confirmed-border confirmed-bg-light confirmed-text': center.sessions[idx]['available_capacity'] <= 10}">
-                            {{center.sessions[idx]['available_capacity']}}
-                        </div>
-                        <div class="chip"
-                            [ngClass]="{'active-border active-bg-light active-text': center.sessions[idx]['min_age_limit'] == 45, 'deceased-border deceased-bg-light deceased-text': center.sessions[idx]['min_age_limit'] !== 45}">
-                            {{center.sessions[idx]['min_age_limit']}}+
-                        </div>
-                        <div class="chip"
-                            [ngClass]="{'info-border info-bg-light info-text': center.sessions[idx]['vaccine'] == 'COVISHIELD', 'vaccine-border vaccine-bg-light vaccine-text': center.sessions[idx]['vaccine'] !== 'COVISHIELD'}">
-                            {{center.sessions[idx]['vaccine']}}
-                        </div>
+<mat-accordion class="example-headers-align" multi>
+    <mat-expansion-panel>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Vaccine Status
+            </mat-panel-title>
+            <mat-panel-description>
+                <mat-icon class="mr-1">search</mat-icon>
+                Search status by PIN or by District
+            </mat-panel-description>
+        </mat-expansion-panel-header>
 
-                        <!-- <mat-chip-list aria-label="session_details" class="mat-chip-list-stacked">
-                            <mat-chip [color]="center.sessions[idx]['available_capacity'] < 10 ? 'accent' : 'warn'">{{center.sessions[idx]['available_capacity']}}</mat-chip>
-                            <mat-chip color="accent">{{center.sessions[idx]['min_age_limit']}} +</mat-chip>
-                            <mat-chip [color]="center.sessions[idx]['vaccine'] == 'COVISHIELD' ? 'accent' : 'primary'" selected>{{center.sessions[idx]['vaccine']}}</mat-chip>
-                        </mat-chip-list> -->
+        <div class="state-data-container pl-1 pr-1">
+            <div class="d-flex flex-wrap flex-row">
+                <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                    [(ngModel)]="findBy">
+                    <mat-radio-button class="example-radio-button" color="accent" [value]="'pin'">
+                        Find by PIN
+                    </mat-radio-button>
+                    <mat-radio-button class="example-radio-button" color="accent" [value]="'district'">
+                        Find by District
+                    </mat-radio-button>
+                </mat-radio-group>
+            </div>
+            <div class="d-flex flex-wrap flex-row mt-1" *ngIf="findBy === 'pin'">
+                <div class="w-33 pr-1 d-flex">
+                    <mat-form-field appearance="fill" class="w-100 pr-1">
+                        <mat-label>PIN Code</mat-label>
+                        <input matInput [(ngModel)]="pin">
+                    </mat-form-field>
+                    <div class="d-i-flex align-center">
+                        <button mat-button color="accent" [disabled]="!pin" (click)="getByPin()">Get Centers</button>
                     </div>
-                    <div *ngIf="!center.sessions[idx]">NA</div>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap flex-row mt-1" *ngIf="findBy === 'district'">
+                <div class="w-33 pr-1 d-flex">
+                    <mat-form-field appearance="fill" class="w-100 pr-1">
+                        <mat-label>Select State</mat-label>
+                        <mat-select [(ngModel)]="selectedStateId"
+                            (selectionChange)="getDistricts(); selectedDistId = 0;"
+                            [disabled]="!states && states.length == 0">
+                            <mat-option *ngFor="let state of states" [value]="state.state_id">{{state.state_name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div class="w-33 pr-1 d-flex">
+                    <mat-form-field appearance="fill" class="w-100 pr-1">
+                        <mat-label>Select District</mat-label>
+                        <mat-select [(ngModel)]="selectedDistId" (selectionChange)="getByDistrict()"
+                            [disabled]="!states && states.length == 0 && !selectedDistId">
+                            <mat-option *ngFor="let dist of districts" [value]="dist.district_id">{{dist.district_name}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex flex-wrap flex-row mt-1" *ngIf="centers && centers.length > 0">
+                <div class="w-100 session_info">
+                    <div class="session_info_header d-flex w-100">
+                        <div class="center">Address</div>
+                        <div class="slot" *ngFor="let date of dates">{{date}}</div>
+                    </div>
+                    <div class="session_info_body d-flex" *ngFor="let center of centers">
+                        <div class="center">
+                            <div>{{center.name}}</div>
+                            <div>{{center.address}}</div>
+                            <div>{{center.block_name}}</div>
+                            <div>{{center.pincode}}</div>
+                        </div>
+                        <div class="slot" *ngFor="let date of dates; let idx = index;">
+                            <div *ngIf="center.sessions[idx]" class="chip-container">
+                                <div class="chip"
+                                    [ngClass]="{'recovered-border recovered-bg-light recovered-text': center.sessions[idx]['available_capacity'] > 10, 'confirmed-border confirmed-bg-light confirmed-text': center.sessions[idx]['available_capacity'] <= 10}">
+                                    {{center.sessions[idx]['available_capacity']}}
+                                </div>
+                                <div class="chip"
+                                    [ngClass]="{'active-border active-bg-light active-text': center.sessions[idx]['min_age_limit'] == 45, 'deceased-border deceased-bg-light deceased-text': center.sessions[idx]['min_age_limit'] !== 45}">
+                                    {{center.sessions[idx]['min_age_limit']}}+
+                                </div>
+                                <div class="chip"
+                                    [ngClass]="{'info-border info-bg-light info-text': center.sessions[idx]['vaccine'] == 'COVISHIELD', 'vaccine-border vaccine-bg-light vaccine-text': center.sessions[idx]['vaccine'] !== 'COVISHIELD'}">
+                                    {{center.sessions[idx]['vaccine']}}
+                                </div>
+
+                                <!-- <mat-chip-list aria-label="session_details" class="mat-chip-list-stacked">
+                                <mat-chip [color]="center.sessions[idx]['available_capacity'] < 10 ? 'accent' : 'warn'">{{center.sessions[idx]['available_capacity']}}</mat-chip>
+                                <mat-chip color="accent">{{center.sessions[idx]['min_age_limit']}} +</mat-chip>
+                                <mat-chip [color]="center.sessions[idx]['vaccine'] == 'COVISHIELD' ? 'accent' : 'primary'" selected>{{center.sessions[idx]['vaccine']}}</mat-chip>
+                            </mat-chip-list> -->
+                            </div>
+                            <div *ngIf="!center.sessions[idx]">NA</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel [expanded]="true">
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                Vaccination Certificate
+            </mat-panel-title>
+            <mat-panel-description>
+                <mat-icon class="mr-1">summarize</mat-icon>
+                Download report in PDF format
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class="state-data-container pl-1 pr-1">
+            <div class="d-flex flex-wrap flex-row mt-1">
+                <div class="w-33 pr-1 d-flex">
+                    <mat-form-field appearance="fill" class="w-100 pr-1">
+                        <mat-label>Phone</mat-label>
+                        <input matInput [(ngModel)]="phone">
+                    </mat-form-field>
+                    <div class="d-i-flex align-center">
+                        <button mat-button color="accent" [disabled]="!phone" (click)="getOTP()">Get OTP</button>
+                    </div>
+                </div>
+                <div class="w-33 pr-1 d-flex">
+                    <mat-form-field appearance="fill" class="w-100 pr-1">
+                        <mat-label>OTP</mat-label>
+                        <input matInput [(ngModel)]="otp">
+                    </mat-form-field>
+                    <div class="d-i-flex align-center">
+                        <button mat-button color="accent" [disabled]="!phone && !otp" (click)="sha256(otp)">Validate OTP</button>
+                    </div>
+                </div>
+                <div class="w-33 pr-1 d-flex">
+                    <mat-form-field appearance="fill" class="w-100 pr-1">
+                        <mat-label>Beneficiary Ref. ID</mat-label>
+                        <input matInput [(ngModel)]="refId">
+                    </mat-form-field>
+                    <div class="d-i-flex align-center">
+                        <button mat-button color="accent" [disabled]="!phone && !otp && !token" (click)="getCertificate()">Get Certificate</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </mat-expansion-panel>
+</mat-accordion>

@@ -452,6 +452,9 @@ mat-list-option.active {
 .mat-snack-bar-container {
     background-color: rgba(0, 0, 0, .8);
 }
+.mat-expansion-panel {
+    // overflow: visible!important;
+}
 
 // Components
 app-country-data {
@@ -542,9 +545,9 @@ app-country-data {
         .session_info {
             color: #fff;
 
-            .session_info_header {
-                background: rgba(0, 0, 0, 1);
-            }
+            // .session_info_header {
+            //     background: rgba(0, 0, 0, 1);
+            // }
 
             .session_info_body {
                 &:nth-child(odd) {
@@ -570,9 +573,16 @@ app-country-data {
             }
 
             .mat-expansion-panel-header-title,
-            .mat-expansion-indicator::after {
+            .mat-expansion-indicator::after,
+            .mat-expansion-panel-header-description {
                 color: rgba(255, 255, 255, .87);
+                display: inline-flex;
+                align-items: center;
             }
+        }
+
+        .mat-button.mat-button-disabled.mat-button-disabled {
+            color: rgba(255,0,0,.26);
         }
 
         .dist-data,
