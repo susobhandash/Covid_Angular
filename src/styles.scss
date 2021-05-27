@@ -676,9 +676,14 @@ app-country-data {
         }
 
         .mat-expansion-panel-body {
+            padding: 5px;
             >.d-flex {
                 flex-direction: column;
             }
+        }
+
+        .compare-chart {
+            max-width: 365px!important;
         }
 
         .kpi-container {

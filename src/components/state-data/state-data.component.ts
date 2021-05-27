@@ -12,6 +12,8 @@ import { Color, Label, BaseChartDirective } from 'ng2-charts';
 })
 export class StateDataComponent implements OnInit {
 
+  windowWdt = 0;
+
   // Dropdown Arrays
   states: States[] = [];
   dataFields: DataFields[] = [];
@@ -153,7 +155,8 @@ export class StateDataComponent implements OnInit {
     }
   }
   public compareLineChartOptions = {
-    responsive: true,
+    responsive: false,
+    maintainAspectRatio: false,
     backgroundColor: '',
     legend: {
       display: false
@@ -185,7 +188,13 @@ export class StateDataComponent implements OnInit {
 
   @ViewChild(BaseChartDirective) private Chart: BaseChartDirective;
 
-  constructor(private data: CovidDataService, private activatedroute: ActivatedRoute, private router: Router, private location: Location) { }
+  constructor(private data: CovidDataService, private activatedroute: ActivatedRoute, private router: Router, private location: Location) {
+    if (document.documentElement.clientWidth > 499) {
+      this.windowWdt = 550;
+    } else {
+      this.windowWdt = 350;
+    }
+  }
 
   ngOnInit(): void {
     this.getStatesList();

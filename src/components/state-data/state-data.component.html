@@ -131,10 +131,10 @@
 
                 <div class="chart-title mb-1">Monthly Comparative Data</div>
                 <div class="d-flex justify-center text-center">
-                    <div class="br-5 p-1 monthly-chart" style="max-width: 500px;" [style.background]="lineChartBgColor">
+                    <div class="br-5 monthly-chart compare-chart" style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;" [style.background]="lineChartBgColor">
                         <canvas baseChart [datasets]="monthlyCompareChartData" [labels]="monthlyChartLabels"
                             [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true" [chartType]="'line'"
-                            height="350" width="450">
+                            height="335" [attr.width]="windowWdt">
                         </canvas>
                     </div>
                 </div>
