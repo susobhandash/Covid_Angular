@@ -35,6 +35,8 @@ export class StateDataComponent implements OnInit {
   totalActive = 0;
   deltaActive = 0;
   totalVaccinated = 0;
+  totalTested = 0;
+  deltaTested = 0;
 
   // Others
   date = '';
@@ -84,6 +86,11 @@ export class StateDataComponent implements OnInit {
     label: 'Monthly Data',
     borderWidth: 1
   }];
+  public monthlyCompareChartData: ChartDataSets[] = [{
+    data: [],
+    label: 'Monthly Data',
+    borderWidth: 1
+  }];
   public monthlyChartLabels: Label[] = [];
   public lineChartBgColor = '';
   public lineChartTextColor = '';
@@ -92,6 +99,28 @@ export class StateDataComponent implements OnInit {
       borderColor: 'black',
       backgroundColor: 'rgba(255,0,0,0.3)',
     },
+  ];
+  public multiLineChartColors: Color[] = [
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    },
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    },
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    },
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    },
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    }
   ];
   public lineChartOptions = {
     responsive: true,
@@ -119,6 +148,36 @@ export class StateDataComponent implements OnInit {
         },
         ticks: {
           fontColor: ''
+        }
+      }]
+    }
+  }
+  public compareLineChartOptions = {
+    responsive: true,
+    backgroundColor: '',
+    legend: {
+      display: false
+    },
+    elements: {
+      point: {
+        radius: 2
+      }
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false,
+        },
+        ticks: {
+          fontColor: '#fff'
+        }
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false,
+        },
+        ticks: {
+          fontColor: '#fff'
         }
       }]
     }
@@ -272,6 +331,12 @@ export class StateDataComponent implements OnInit {
         cumulativeData[year + '-' + month]['recovered'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['recovered'] ? res['dates'][dt]['delta']['recovered'] : 0)];
       }
 
+      if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['tested']) {
+        cumulativeData[year + '-' + month]['tested'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['tested'] ? res['dates'][dt]['delta']['tested'] : 0))
+      } else {
+        cumulativeData[year + '-' + month]['tested'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['tested'] ? res['dates'][dt]['delta']['tested'] : 0)];
+      }
+
       if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['vaccinated']) {
         cumulativeData[year + '-' + month]['vaccinated'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated'] ? res['dates'][dt]['delta']['vaccinated'] : 0))
       } else {
@@ -294,6 +359,7 @@ export class StateDataComponent implements OnInit {
       this.monthlyChartDetails[dt].deceased = cumulativeData[dt]['deceased'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].recovered = cumulativeData[dt]['recovered'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].vaccinated = cumulativeData[dt]['vaccinated'].reduce((a, b) => a + b, 0);
+      this.monthlyChartDetails[dt].tested = cumulativeData[dt]['tested'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].active = (this.monthlyChartDetails[dt].confirmed ? this.monthlyChartDetails[dt].confirmed : 0) - 
                                             (this.monthlyChartDetails[dt].recovered ? this.monthlyChartDetails[dt].recovered : 0) - 
                                             (this.monthlyChartDetails[dt].deceased ? this.monthlyChartDetails[dt].deceased : 0);
@@ -331,13 +397,46 @@ export class StateDataComponent implements OnInit {
 
   assignMetMonthlyData() {
     this.monthlyChartData[0].data = [];
+    this.monthlyCompareChartData[0].data = [];
     this.monthlyChartLabels = [];
     let monthlyKeys = Object.keys(this.monthlyChartDetails);
     monthlyKeys.forEach(mnth => {
       this.monthlyChartLabels.push(this.getFormattedDate(mnth, true));
       this.monthlyChartData[0].data.push(this.monthlyChartDetails[mnth][this.selectedDelta.split('-')[1]]);
+      // this.monthlyCompareChartData[0].data.push();
     });
+
+    this.getCompareChartData(monthlyKeys);
     // console.log(this.selectedDelta);
+  }
+
+  getCompareChartData(monthlyKeys) {
+    let params = [
+      {'field': 'confirmed', color:'rgba(255, 99, 132, 1)'},
+      {'field': 'recovered', color:'rgba(75, 192, 192, 1)'},
+      {'field': 'deceased', color:'rgba(201, 203, 207, 1)'},
+      {'field': 'tested', color:'rgba(153, 102, 255, 1)'},
+      {'field': 'vaccinated', color:'rgba(255,193,7, 1)'}
+    ];
+
+    params.forEach((prm, idx) => {
+      this.multiLineChartColors[idx].borderColor = prm.color;
+      this.multiLineChartColors[idx].backgroundColor = 'transparent';
+      monthlyKeys.forEach(mnth => {
+        if(this.monthlyCompareChartData[idx]) {
+          this.monthlyCompareChartData[idx].data.push(this.monthlyChartDetails[mnth][prm.field]);
+        } else {
+          this.monthlyCompareChartData.push({
+            data: [],
+            label: 'Monthly Data',
+            borderWidth: 1
+          });
+          this.monthlyCompareChartData[idx].data.push(this.monthlyChartDetails[mnth][prm.field]);
+        }
+        
+        // this.monthlyCompareChartData[0].data.push();
+      });
+    });
   }
 
   creteChartData(dataFields) {
@@ -354,8 +453,10 @@ export class StateDataComponent implements OnInit {
     this.deltaDeceased = currentDayData.delta && currentDayData.delta.deceased ? currentDayData.delta.deceased : 0;
     let deltaOther = currentDayData.delta && currentDayData.delta.other ? currentDayData.delta.other : 0
     this.deltaActive = this.deltaConfirmed - this.deltaRecovered - this.deltaDeceased - deltaOther;
+    this.deltaTested = currentDayData.delta && currentDayData.delta.tested ? currentDayData.delta.tested : 0;
 
     this.totalConfirmed = currentDayData.total.confirmed;
+    this.totalTested = currentDayData.total.tested;
     this.totalRecovered = currentDayData.total.recovered;
     this.totalDeceased = currentDayData.total.deceased;
     this.totalVaccinated = currentDayData.total.vaccinated;
@@ -365,13 +466,13 @@ export class StateDataComponent implements OnInit {
 
     for (let i = 0; i < this.selectedDataDays; i++) {
       let dataToPush;
-      
+      let selectedData = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field];
       if(dataParam !== 'active') {
-        dataToPush = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field][dataParam] : 0;
+        dataToPush = selectedData[dataParam] ? selectedData[dataParam] : 0;
       } else {
-        let confirmedStats = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['confirmed'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['confirmed'] : 0;
-        let recoveredStats = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['recovered'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['recovered'] : 0;
-        let deceasedStats = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['deceased'] ? data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field]['deceased'] : 0;
+        let confirmedStats = selectedData['confirmed'] ? selectedData['confirmed'] : 0;
+        let recoveredStats = selectedData['recovered'] ? selectedData['recovered'] : 0;
+        let deceasedStats = selectedData['deceased'] ? selectedData['deceased'] : 0;
 
         dataToPush = confirmedStats - recoveredStats - deceasedStats;
       }

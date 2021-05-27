@@ -35,7 +35,7 @@ body {
 }
 
 .kpi-container {
-    max-width     : 550px;
+    max-width     : 750px;
     margin        : 0 auto;
     padding-top   : 10px;
     padding-bottom: 10px;
@@ -678,6 +678,16 @@ app-country-data {
         .mat-expansion-panel-body {
             >.d-flex {
                 flex-direction: column;
+            }
+        }
+
+        .kpi-container {
+            max-width: 360px;
+            > div {
+                max-width: 60px;
+                > div {
+                    padding: 5px!important;
+                }
             }
         }
 

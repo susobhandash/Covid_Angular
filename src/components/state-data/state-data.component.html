@@ -58,6 +58,17 @@
                     </div>
                 </div>
                 <div class="vaccine-container">
+                    <div class="mb-1 info-text">Tested</div>
+                    <div class="br-5 p-1 c-p"
+                        [ngClass]="selectedDelta === 'delta-tested' ? 'active-status info-bg' : 'info-bg-light'"
+                        (click)="selectedDelta = 'delta-tested'; selectedDelta7 = 'delta7-tested'; selectedTotal = 'total-tested'; getStateDate();">
+                        <span class="delta info-text-light">
+                            <mat-icon>arrow_upward</mat-icon> {{deltaTested}}
+                        </span>
+                        <div class="total info-text">{{totalTested}}</div>
+                    </div>
+                </div>
+                <div class="vaccine-container">
                     <div class="mb-1 vaccine-text">Vaccine</div>
                     <div class="br-5 p-1 c-p"
                         [ngClass]="selectedDelta === 'delta-vaccinated' ? 'active-status vaccine-bg' : 'vaccine-bg-light'"
@@ -111,10 +122,27 @@
                 </div>
 
             </mat-expansion-panel>
+            <mat-expansion-panel [expanded]="true">
+                <mat-expansion-panel-header>
+                    <mat-panel-title>
+                        Comparative Data
+                    </mat-panel-title>
+                </mat-expansion-panel-header>
+
+                <div class="chart-title mb-1">Monthly Comparative Data</div>
+                <div class="d-flex justify-center text-center">
+                    <div class="br-5 p-1 monthly-chart" style="max-width: 500px;" [style.background]="lineChartBgColor">
+                        <canvas baseChart [datasets]="monthlyCompareChartData" [labels]="monthlyChartLabels"
+                            [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true" [chartType]="'line'"
+                            height="350" width="450">
+                        </canvas>
+                    </div>
+                </div>
+            </mat-expansion-panel>
         </mat-accordion>
 
         <div class="w-100 p-1 pt-0 d-flex flex-wrap justify-between dist-container">
-            <div class="dist-data" *ngFor="let dist of stateDistData">
+            <div class="dist-data" *ngFor="let dist of stateDistData" cdkDrag>
                 <div class="d-flex align-center justify-between info-text bold info-bg-light dist-title">
                     <span>{{dist.name}}</span>
                     <div class="d-flex">
