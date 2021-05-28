@@ -46,7 +46,6 @@ export class StateDataComponent implements OnInit {
   totalData = {};
 
   // public LocalChartOptions: LocalChartOptions;
-
   public chartOptions: LocalChartOptions = {
     showBg: true
   };
@@ -88,20 +87,26 @@ export class StateDataComponent implements OnInit {
     label: 'Monthly Data',
     borderWidth: 1
   }];
+
+  // Compare Data
   public monthlyCompareChartData: ChartDataSets[] = [{
     data: [],
-    label: 'Monthly Data',
+    label: 'Monthly Compare Data',
+    borderWidth: 1
+  }];
+  public weeklyCompareChartData: ChartDataSets[] = [{
+    data: [],
+    label: 'Weekly Data',
+    borderWidth: 1
+  }];
+  public dailyCompareChartData: ChartDataSets[] = [{
+    data: [],
+    label: 'Daily Data',
     borderWidth: 1
   }];
   public monthlyChartLabels: Label[] = [];
-  public lineChartBgColor = '';
-  public lineChartTextColor = '';
-  public lineChartColors: Color[] = [
-    {
-      borderColor: 'black',
-      backgroundColor: 'rgba(255,0,0,0.3)',
-    },
-  ];
+  public weeklyCompareChartLabels: Label[] = [];
+  public dailyCompareChartLabels: Label[] = [];
   public multiLineChartColors: Color[] = [
     {
       borderColor: 'black',
@@ -124,6 +129,49 @@ export class StateDataComponent implements OnInit {
       backgroundColor: 'rgba(255,0,0,0.3)',
     }
   ];
+  public compareLineChartOptions = {
+    responsive: false,
+    maintainAspectRatio: false,
+    backgroundColor: '',
+    legend: {
+      display: false
+    },
+    elements: {
+      point: {
+        radius: 2
+      }
+    },
+    scales: {
+      xAxes: [{
+        gridLines: {
+          display: false,
+        },
+        ticks: {
+          fontColor: '#b0bec5'
+        }
+      }],
+      yAxes: [{
+        gridLines: {
+          display: false,
+        },
+        ticks: {
+          fontColor: '#b0bec5',
+          beginAtZero: true
+        }
+      }]
+    }
+  }
+
+  // Line Chart Options
+  public lineChartBgColor = '';
+  public lineChartTextColor = '';
+  public lineChartColors: Color[] = [
+    {
+      borderColor: 'black',
+      backgroundColor: 'rgba(255,0,0,0.3)',
+    },
+  ];
+
   public lineChartOptions = {
     responsive: true,
     backgroundColor: '',
@@ -154,37 +202,7 @@ export class StateDataComponent implements OnInit {
       }]
     }
   }
-  public compareLineChartOptions = {
-    responsive: false,
-    maintainAspectRatio: false,
-    backgroundColor: '',
-    legend: {
-      display: false
-    },
-    elements: {
-      point: {
-        radius: 2
-      }
-    },
-    scales: {
-      xAxes: [{
-        gridLines: {
-          display: false,
-        },
-        ticks: {
-          fontColor: '#fff'
-        }
-      }],
-      yAxes: [{
-        gridLines: {
-          display: false,
-        },
-        ticks: {
-          fontColor: '#fff'
-        }
-      }]
-    }
-  }
+
 
   @ViewChild(BaseChartDirective) private Chart: BaseChartDirective;
 
@@ -192,7 +210,7 @@ export class StateDataComponent implements OnInit {
     if (document.documentElement.clientWidth > 499) {
       this.windowWdt = 550;
     } else {
-      this.windowWdt = 350;
+      this.windowWdt = 360;
     }
   }
 
@@ -261,7 +279,6 @@ export class StateDataComponent implements OnInit {
       });
       let distInfo = selectedStateInfo && selectedStateInfo.length > 0 ? statesData[selectedStateInfo[0]] : statesData['State Unassigned'];
       this.processDistData(distInfo);
-      // console.log(this.stateDistData);
       this.getTimeSeriesData();
     }, err => {
       console.log(err);
@@ -285,7 +302,6 @@ export class StateDataComponent implements OnInit {
     });
     let param = this.selectedDelta.split('-')[1];
     districtData = this.stateDistData.slice(0);
-    // console.log(districtData);
     districtData.sort(function (a, b) {
       return b[param] - a[param];
     });
@@ -293,7 +309,6 @@ export class StateDataComponent implements OnInit {
     this.stateDistData = [...districtData];
     if (this.Chart)
       this.Chart.update();
-    // console.log(districtData);
   }
 
   // Get all States Data by Time Series
@@ -313,12 +328,10 @@ export class StateDataComponent implements OnInit {
     let data = res['dates'];
     let datesArr = Object.keys(data);
     let cumulativeData = {};
-    // console.log(data);
     datesArr.forEach(dt => {
       let year = dt.split('-')[0];
       let month = dt.split('-')[1];
       let date = dt.split('-')[2];
-      // console.log(year +', '+ month +', '+ date);
 
       if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['confirmed']) {
         cumulativeData[year + '-' + month]['confirmed'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['confirmed'] ? res['dates'][dt]['delta']['confirmed'] : 0))
@@ -351,8 +364,6 @@ export class StateDataComponent implements OnInit {
       } else {
         cumulativeData[year + '-' + month]['vaccinated'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated'] ? res['dates'][dt]['delta']['vaccinated'] : 0)];
       }
-
-      // console.log(cumulativeData);
     });
 
     this.getMonthlyChartData(cumulativeData);
@@ -369,10 +380,9 @@ export class StateDataComponent implements OnInit {
       this.monthlyChartDetails[dt].recovered = cumulativeData[dt]['recovered'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].vaccinated = cumulativeData[dt]['vaccinated'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].tested = cumulativeData[dt]['tested'].reduce((a, b) => a + b, 0);
-      this.monthlyChartDetails[dt].active = (this.monthlyChartDetails[dt].confirmed ? this.monthlyChartDetails[dt].confirmed : 0) - 
-                                            (this.monthlyChartDetails[dt].recovered ? this.monthlyChartDetails[dt].recovered : 0) - 
-                                            (this.monthlyChartDetails[dt].deceased ? this.monthlyChartDetails[dt].deceased : 0);
-      // console.log(this.monthlyChartDetails);
+      this.monthlyChartDetails[dt].active = (this.monthlyChartDetails[dt].confirmed ? this.monthlyChartDetails[dt].confirmed : 0) -
+        (this.monthlyChartDetails[dt].recovered ? this.monthlyChartDetails[dt].recovered : 0) -
+        (this.monthlyChartDetails[dt].deceased ? this.monthlyChartDetails[dt].deceased : 0);
     });
 
     this.assignMetMonthlyData();
@@ -409,10 +419,10 @@ export class StateDataComponent implements OnInit {
     this.monthlyCompareChartData[0].data = [];
     this.monthlyChartLabels = [];
     let monthlyKeys = Object.keys(this.monthlyChartDetails);
+
     monthlyKeys.forEach(mnth => {
       this.monthlyChartLabels.push(this.getFormattedDate(mnth, true));
       this.monthlyChartData[0].data.push(this.monthlyChartDetails[mnth][this.selectedDelta.split('-')[1]]);
-      // this.monthlyCompareChartData[0].data.push();
     });
 
     this.getCompareChartData(monthlyKeys);
@@ -421,36 +431,108 @@ export class StateDataComponent implements OnInit {
 
   getCompareChartData(monthlyKeys) {
     let params = [
-      {'field': 'confirmed', color:'rgba(255, 99, 132, 1)'},
-      {'field': 'recovered', color:'rgba(75, 192, 192, 1)'},
-      {'field': 'deceased', color:'rgba(201, 203, 207, 1)'},
-      {'field': 'tested', color:'rgba(153, 102, 255, 1)'},
-      {'field': 'vaccinated', color:'rgba(255,193,7, 1)'}
+      { 'field': 'tested', color: 'rgba(153, 102, 255, 1)' },
+      { 'field': 'vaccinated', color: 'rgba(255,193,7, 1)' }
     ];
+
+    if (this.selectedDelta.split('-')[1] !== 'tested' && this.selectedDelta.split('-')[1] !== 'vaccinated') {
+      params.unshift({ 'field': this.selectedDelta.split('-')[1], color: this.totalChartData.borderColor });
+
+      params.forEach((prm, idx) => {
+        this.multiLineChartColors[idx].borderColor = prm.color;
+        this.multiLineChartColors[idx].backgroundColor = 'transparent';
+        monthlyKeys.forEach(mnth => {
+          if (this.monthlyCompareChartData[idx]) {
+            this.monthlyCompareChartData[idx].data.push(this.monthlyChartDetails[mnth][prm.field]);
+          } else {
+            this.monthlyCompareChartData.push({
+              data: [],
+              label: prm.field + ' Data',
+              borderWidth: 1
+            });
+            this.monthlyCompareChartData[idx].data.push(this.monthlyChartDetails[mnth][prm.field]);
+          }
+        });
+      });
+    }
+    // console.log(this.monthlyCompareChartData);
+  }
+
+  getDeltaCompareChartData(compareChartData, dataParam, field, currentDayData) {
+    let params = [
+      { 'field': 'tested', color: 'rgba(153, 102, 255, 1)' },
+      { 'field': 'vaccinated', color: 'rgba(255,193,7, 1)' }
+    ];
+
+    if (field === 'delta') {
+      this.dailyCompareChartData = [];
+      this.dailyCompareChartLabels = [];
+    }
+
+    if (field === 'delta7') {
+      this.weeklyCompareChartData = [];
+      this.weeklyCompareChartLabels = [];
+    }
+
+    currentDayData.forEach(date => {
+      if (field === 'delta') {
+        this.dailyCompareChartLabels.push(date);
+      }
+
+      if (field === 'delta7') {
+        this.weeklyCompareChartLabels.push(date);
+      }
+    });
+
+    if (dataParam !== 'tested' && dataParam !== 'vaccinated') {
+      params.unshift({ 'field': dataParam, color: this.totalChartData.borderColor });
+    }
 
     params.forEach((prm, idx) => {
       this.multiLineChartColors[idx].borderColor = prm.color;
       this.multiLineChartColors[idx].backgroundColor = 'transparent';
-      monthlyKeys.forEach(mnth => {
-        if(this.monthlyCompareChartData[idx]) {
-          this.monthlyCompareChartData[idx].data.push(this.monthlyChartDetails[mnth][prm.field]);
-        } else {
-          this.monthlyCompareChartData.push({
-            data: [],
-            label: 'Monthly Data',
-            borderWidth: 1
-          });
-          this.monthlyCompareChartData[idx].data.push(this.monthlyChartDetails[mnth][prm.field]);
+      compareChartData.forEach(mnth => {
+        if (field === 'delta') {
+          if (prm.field === 'active') {
+            mnth[prm.field] = (mnth['confirmed'] ? mnth['confirmed'] : 0) - (mnth['deceased'] ? mnth['deceased'] : 0) - (mnth['recovered'] ? mnth['recovered'] : 0) - (mnth['other'] ? mnth['other'] : 0);
+          }
+          if (this.dailyCompareChartData[idx]) {
+            this.dailyCompareChartData[idx].data.push(mnth[prm.field]);
+          } else {
+            this.dailyCompareChartData.push({
+              data: [],
+              label: 'Daily ' + prm.field + ' Data',
+              borderWidth: 1
+            });
+            this.dailyCompareChartData[idx].data.push(mnth[prm.field]);
+          }
+        } else if (field === 'delta7') {
+          if (prm.field === 'active') {
+            mnth[prm.field] = (mnth['confirmed'] ? mnth['confirmed'] : 0) - (mnth['deceased'] ? mnth['deceased'] : 0) - (mnth['recovered'] ? mnth['recovered'] : 0) - (mnth['other'] ? mnth['other'] : 0);
+          }
+          if (this.weeklyCompareChartData[idx]) {
+            this.weeklyCompareChartData[idx].data.push(mnth[prm.field]);
+          } else {
+            this.weeklyCompareChartData.push({
+              data: [],
+              label: 'Weekly ' + prm.field + ' Data',
+              borderWidth: 1
+            });
+            this.weeklyCompareChartData[idx].data.push(mnth[prm.field]);
+          }
         }
-        
-        // this.monthlyCompareChartData[0].data.push();
+
       });
     });
+
+    // console.log(this.dailyCompareChartData);
+    console.log(this.weeklyCompareChartData);
   }
 
   creteChartData(dataFields) {
     let field = dataFields.split('-')[0];
     let dataParam = dataFields.split('-')[1];
+    let compareDates = [];
 
     const data = this.totalData[this.selectedState]['dates'];
     const dates = Object.keys(this.totalData[this.selectedState].dates);
@@ -460,6 +542,7 @@ export class StateDataComponent implements OnInit {
     this.deltaConfirmed = currentDayData.delta && currentDayData.delta.confirmed ? currentDayData.delta.confirmed : 0;
     this.deltaRecovered = currentDayData.delta && currentDayData.delta.recovered ? currentDayData.delta.recovered : 0;
     this.deltaDeceased = currentDayData.delta && currentDayData.delta.deceased ? currentDayData.delta.deceased : 0;
+
     let deltaOther = currentDayData.delta && currentDayData.delta.other ? currentDayData.delta.other : 0
     this.deltaActive = this.deltaConfirmed - this.deltaRecovered - this.deltaDeceased - deltaOther;
     this.deltaTested = currentDayData.delta && currentDayData.delta.tested ? currentDayData.delta.tested : 0;
@@ -473,10 +556,12 @@ export class StateDataComponent implements OnInit {
 
     this.selectedDataDays = field === 'total' ? 30 : 7;
 
+    let compareChartData = [];
+
     for (let i = 0; i < this.selectedDataDays; i++) {
       let dataToPush;
       let selectedData = data[Object.keys(data)[Object.keys(data).length - (i + 2)]][field];
-      if(dataParam !== 'active') {
+      if (dataParam !== 'active') {
         dataToPush = selectedData[dataParam] ? selectedData[dataParam] : 0;
       } else {
         let confirmedStats = selectedData['confirmed'] ? selectedData['confirmed'] : 0;
@@ -485,7 +570,8 @@ export class StateDataComponent implements OnInit {
 
         dataToPush = confirmedStats - recoveredStats - deceasedStats;
       }
-      
+
+      compareDates.push(this.getFormattedDate(dates[dates.length - (i + 1)]));
 
       if (field === 'delta') {
         this.deltaChartData.data.push(dataToPush);
@@ -501,18 +587,20 @@ export class StateDataComponent implements OnInit {
         this.chartLabels.push(this.getFormattedDate(dates[dates.length - (i + 1)]));
       }
 
+      compareChartData.push(selectedData);
+
       this.getChartProps(field, dataParam);
     }
+
+    this.getDeltaCompareChartData(compareChartData, dataParam, field, compareDates);
 
     let label = this.dataFields.filter(el => {
       return el.code === dataFields;
     });
 
     if (field === 'delta') {
-      // this.chartType = 'bar';
       this.deltaChartData.label = label && label.length > 0 ? label[0].name : '';
     } else if (field === 'delta7') {
-      // this.chartType = 'bar';
       this.delta7ChartData.label = label[0]['name'];
     } else if (field === 'total') {
       this.totalChartData.label = label && label.length > 0 ? label[0].name : '';
@@ -523,7 +611,7 @@ export class StateDataComponent implements OnInit {
 
     this.deltaChartData = Object.assign(this.deltaChartData);
     this.delta7ChartData = Object.assign(this.delta7ChartData);
-    // console.log(this.deltaChartData.data.length);
+
     this.totalChartData = Object.assign(this.totalChartData);
     this.chartData = Object.assign(this.chartData);
   }
@@ -536,13 +624,13 @@ export class StateDataComponent implements OnInit {
 
     switch (dataParam) {
       case 'confirmed':
-        bgColor = 'rgba(255, 99, 132, .05)';
+        bgColor = 'rgba(255, 99, 132, .1)';
         borderColor = 'rgba(255, 99, 132, 1)';
         hoverBgColor = 'rgba(255, 99, 132, .5)';
         break;
 
       case 'recovered':
-        bgColor = 'rgba(75, 192, 192, .05)';
+        bgColor = 'rgba(75, 192, 192, .1)';
         borderColor = 'rgba(75, 192, 192, 1)';
         hoverBgColor = 'rgba(75, 192, 192, .5)';
         break;
@@ -554,7 +642,7 @@ export class StateDataComponent implements OnInit {
         break;
 
       case 'tested':
-        bgColor = 'rgba(153, 102, 255, .05)';
+        bgColor = 'rgba(153, 102, 255, .1)';
         borderColor = 'rgba(153, 102, 255, 1)';
         hoverBgColor = 'rgba(153, 102, 255, .5)';
         break;
@@ -566,7 +654,7 @@ export class StateDataComponent implements OnInit {
         break;
 
       case 'active':
-        bgColor = 'rgba(0, 123, 255, .05)';
+        bgColor = 'rgba(0, 123, 255, .1)';
         borderColor = 'rgba(0, 123, 255, 1)';
         hoverBgColor = 'rgba(0, 123, 255, .5)';
         break;

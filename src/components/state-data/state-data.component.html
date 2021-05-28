@@ -95,17 +95,16 @@
 
                 <div class="d-flex">
                     <div class="chart-container w-33 text-center mt-1">
-                        <app-chart [chartType]="'bar'" [chartLabels]='deltaChartLabels' [chartOptions]='deltaChartOptions'
-                            [chartData]='deltaChartData' [showLegend]='chartLegend'></app-chart>
+                        <app-chart [chartType]="'bar'" [chartLabels]='deltaChartLabels'
+                            [chartOptions]='deltaChartOptions' [chartData]='deltaChartData' [showLegend]='chartLegend'>
+                        </app-chart>
                     </div>
                     <div class="chart-container pl-1 w-33 text-center mt-1">
-                        <app-chart [chartType]="'bar'" [chartLabels]='delta7ChartLabels' [chartOptions]='delta7ChartOptions'
-                            [chartData]='delta7ChartData' [showLegend]='chartLegend'></app-chart>
+                        <app-chart [chartType]="'bar'" [chartLabels]='delta7ChartLabels'
+                            [chartOptions]='delta7ChartOptions' [chartData]='delta7ChartData'
+                            [showLegend]='chartLegend'></app-chart>
                     </div>
                     <div class="chart-container pl-1 w-33 text-center mt-1">
-                        <!-- <app-chart *ngIf="selectedDelta === 'delta-vaccinated'" [chartType]="'line'"
-                            [chartLabels]='totalChartLabels' [chartOptions]='totalChartOptions' [chartData]='totalChartData'
-                            [showLegend]='chartLegend'></app-chart> -->
                         <div class="chart-title mb-1" [style.color]="lineChartTextColor">Monthly Data</div>
                         <div class="br-5 p-1 monthly-chart" [style.background]="lineChartBgColor">
                             <!-- <div class="fb-share-button" data-href="https://covid-angular.susobhandash.vercel.app/states"
@@ -114,8 +113,8 @@
                                 href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fcovid-angular.susobhandash.vercel.app%2Fstates&amp;src=sdkpreparse">Share</a>
                             </div> -->
                             <canvas baseChart [datasets]="monthlyChartData" [labels]="monthlyChartLabels"
-                                [options]="lineChartOptions" [colors]="lineChartColors" [legend]="true" [chartType]="'line'"
-                                height="170">
+                                [options]="lineChartOptions" [colors]="lineChartColors" [legend]="true"
+                                [chartType]="'line'" height="170">
                             </canvas>
                         </div>
                     </div>
@@ -129,13 +128,45 @@
                     </mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <div class="chart-title mb-1">Monthly Comparative Data</div>
-                <div class="d-flex justify-center text-center">
-                    <div class="br-5 monthly-chart compare-chart" style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;" [style.background]="lineChartBgColor">
-                        <canvas baseChart [datasets]="monthlyCompareChartData" [labels]="monthlyChartLabels"
-                            [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true" [chartType]="'line'"
-                            height="335" [attr.width]="windowWdt">
-                        </canvas>
+                <div class="d-flex">
+                    <div class="chart-container w-33 text-center mt-1">
+                        <div class="chart-title mb-1" [style.color]="lineChartTextColor">Daily Comparative Data</div>
+                        <div class="d-flex justify-center text-center">
+                            <div class="br-5 monthly-chart compare-chart"
+                                style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;"
+                                [style.background]="lineChartBgColor">
+                                <canvas baseChart [datasets]="dailyCompareChartData" [labels]="dailyCompareChartLabels"
+                                    [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true"
+                                    [chartType]="'line'" height="335" [attr.width]="windowWdt">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container w-33 text-center mt-1">
+                        <div class="chart-title mb-1" [style.color]="lineChartTextColor">Weekly Comparative Data</div>
+                        <div class="d-flex justify-center text-center">
+                            <div class="br-5 monthly-chart compare-chart"
+                                style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;"
+                                [style.background]="lineChartBgColor">
+                                <canvas baseChart [datasets]="weeklyCompareChartData" [labels]="weeklyCompareChartLabels"
+                                    [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true"
+                                    [chartType]="'line'" height="335" [attr.width]="windowWdt">
+                                </canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container w-33 text-center mt-1">
+                        <div class="chart-title mb-1" [style.color]="lineChartTextColor">Monthly Comparative Data</div>
+                        <div class="d-flex justify-center text-center">
+                            <div class="br-5 monthly-chart compare-chart"
+                                style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;"
+                                [style.background]="lineChartBgColor">
+                                <canvas baseChart [datasets]="monthlyCompareChartData" [labels]="monthlyChartLabels"
+                                    [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true"
+                                    [chartType]="'line'" height="335" [attr.width]="windowWdt">
+                                </canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </mat-expansion-panel>
@@ -168,29 +199,32 @@
                         </mat-icon>{{dist?.delta?.active}}
                     </span>
                 </div>
-                <div class="d-flex align-center" [ngClass]="{'bold confirmed-bg-light': selectedDelta === 'delta-confirmed'}">
+                <div class="d-flex align-center"
+                    [ngClass]="{'bold confirmed-bg-light': selectedDelta === 'delta-confirmed'}">
                     <span class="confirmed-text pr-1">Confirmed</span>
                     <span class="confirmed-text">{{dist?.confirmed}}</span>
                     <span class="confirmed-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.confirmed}}
                     </span>
                 </div>
-                <div class="d-flex align-center" [ngClass]="{'bold recovered-bg-light': selectedDelta === 'delta-recovered'}">
+                <div class="d-flex align-center"
+                    [ngClass]="{'bold recovered-bg-light': selectedDelta === 'delta-recovered'}">
                     <span class="recovered-text pr-1">Recovered</span>
                     <span class="recovered-text">{{dist?.recovered}}</span>
                     <span class="recovered-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.recovered}}
                     </span>
                 </div>
-                <div class="d-flex align-center" [ngClass]="{'bold deceased-bg-light': selectedDelta === 'delta-deceased'}">
+                <div class="d-flex align-center"
+                    [ngClass]="{'bold deceased-bg-light': selectedDelta === 'delta-deceased'}">
                     <span class="deceased-text pr-1">Deceased</span>
                     <span class="deceased-text">{{dist?.deceased}}</span>
                     <span class="deceased-text pl-1 d-i-flex align-center pos-rel">
                         <mat-icon>arrow_upward</mat-icon>{{dist?.delta?.deceased}}
                     </span>
                 </div>
-                <div class="active-bg-light active-text d-flex align-center pos-rel br-5 other-info" style="padding: 5px;"
-                    *ngIf="dist.notes">
+                <div class="active-bg-light active-text d-flex align-center pos-rel br-5 other-info"
+                    style="padding: 5px;" *ngIf="dist.notes">
                     <mat-icon>info</mat-icon>
                     <div class="w-100 ellipsis" style="padding-left: 5px;" #tooltip="matTooltip"
                         matTooltipPosition="right" [matTooltip]="dist.notes">{{dist.notes}}</div>
