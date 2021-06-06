@@ -208,7 +208,7 @@ export class StateDataComponent implements OnInit {
 
   constructor(private data: CovidDataService, private activatedroute: ActivatedRoute, private router: Router, private location: Location) {
     if (document.documentElement.clientWidth > 499) {
-      this.windowWdt = 550;
+      this.windowWdt = (document.documentElement.clientWidth/3) - 80;
     } else {
       this.windowWdt = 360;
     }
@@ -227,19 +227,19 @@ export class StateDataComponent implements OnInit {
       { name: 'Daily Recovered', code: 'delta-recovered' },
       { name: 'Daily Active', code: 'delta-active' },
       { name: 'Daily Tested', code: 'delta-tested' },
-      { name: 'Daily Vaccinated', code: 'delta-vaccinated' },
+      { name: 'Daily Vaccinated', code: 'delta-vaccinated2' },
       { name: 'Weekly Delta Confirmed', code: 'delta7-confirmed' },
       { name: 'Weekly Delta Deceased', code: 'delta7-deceased' },
       { name: 'Weekly Delta Recovered', code: 'delta7-recovered' },
       { name: 'Weekly Delta Active', code: 'delta7-active' },
       { name: 'Weekly Delta Tested', code: 'delta7-tested' },
-      { name: 'Weekly Delta Vaccinated', code: 'delta7-vaccinated' },
+      { name: 'Weekly Delta Vaccinated', code: 'delta7-vaccinated2' },
       { name: 'Total Confirmed', code: 'total-confirmed' },
       { name: 'Total Delta Deceased', code: 'total-deceased' },
       { name: 'Total Delta Recovered', code: 'total-recovered' },
       { name: 'Total Delta Active', code: 'total-active' },
       { name: 'Total Delta Tested', code: 'total-tested' },
-      { name: 'Total Delta Vaccinated', code: 'total-vaccinated' },
+      { name: 'Total Delta Vaccinated', code: 'total-vaccinated2' },
     ];
     this.selectedDataFields[0] = this.dataFields[0].code;
 
@@ -359,10 +359,10 @@ export class StateDataComponent implements OnInit {
         cumulativeData[year + '-' + month]['tested'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['tested'] ? res['dates'][dt]['delta']['tested'] : 0)];
       }
 
-      if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['vaccinated']) {
-        cumulativeData[year + '-' + month]['vaccinated'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated'] ? res['dates'][dt]['delta']['vaccinated'] : 0))
+      if (cumulativeData[year + '-' + month] && cumulativeData[year + '-' + month]['vaccinated2']) {
+        cumulativeData[year + '-' + month]['vaccinated2'].push((res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated2'] ? res['dates'][dt]['delta']['vaccinated2'] : 0))
       } else {
-        cumulativeData[year + '-' + month]['vaccinated'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated'] ? res['dates'][dt]['delta']['vaccinated'] : 0)];
+        cumulativeData[year + '-' + month]['vaccinated2'] = [(res['dates'][dt]['delta'] && res['dates'][dt]['delta']['vaccinated2'] ? res['dates'][dt]['delta']['vaccinated2'] : 0)];
       }
     });
 
@@ -378,7 +378,7 @@ export class StateDataComponent implements OnInit {
       this.monthlyChartDetails[dt].confirmed = cumulativeData[dt]['confirmed'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].deceased = cumulativeData[dt]['deceased'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].recovered = cumulativeData[dt]['recovered'].reduce((a, b) => a + b, 0);
-      this.monthlyChartDetails[dt].vaccinated = cumulativeData[dt]['vaccinated'].reduce((a, b) => a + b, 0);
+      this.monthlyChartDetails[dt].vaccinated2 = cumulativeData[dt]['vaccinated2'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].tested = cumulativeData[dt]['tested'].reduce((a, b) => a + b, 0);
       this.monthlyChartDetails[dt].active = (this.monthlyChartDetails[dt].confirmed ? this.monthlyChartDetails[dt].confirmed : 0) -
         (this.monthlyChartDetails[dt].recovered ? this.monthlyChartDetails[dt].recovered : 0) -
@@ -432,10 +432,10 @@ export class StateDataComponent implements OnInit {
   getCompareChartData(monthlyKeys) {
     let params = [
       { 'field': 'tested', color: 'rgba(153, 102, 255, 1)' },
-      { 'field': 'vaccinated', color: 'rgba(255,193,7, 1)' }
+      { 'field': 'vaccinated2', color: 'rgba(255,193,7, 1)' }
     ];
 
-    if (this.selectedDelta.split('-')[1] !== 'tested' && this.selectedDelta.split('-')[1] !== 'vaccinated') {
+    if (this.selectedDelta.split('-')[1] !== 'tested' && this.selectedDelta.split('-')[1] !== 'vaccinated2') {
       params.unshift({ 'field': this.selectedDelta.split('-')[1], color: this.totalChartData.borderColor });
 
       params.forEach((prm, idx) => {
@@ -461,7 +461,7 @@ export class StateDataComponent implements OnInit {
   getDeltaCompareChartData(compareChartData, dataParam, field, currentDayData) {
     let params = [
       { 'field': 'tested', color: 'rgba(153, 102, 255, 1)' },
-      { 'field': 'vaccinated', color: 'rgba(255,193,7, 1)' }
+      { 'field': 'vaccinated2', color: 'rgba(255,193,7, 1)' }
     ];
 
     if (field === 'delta') {
@@ -484,13 +484,40 @@ export class StateDataComponent implements OnInit {
       }
     });
 
-    if (dataParam !== 'tested' && dataParam !== 'vaccinated') {
+    if (dataParam !== 'tested' && dataParam !== 'vaccinated2') {
       params.unshift({ 'field': dataParam, color: this.totalChartData.borderColor });
     }
 
+    this.multiLineChartColors = [
+      {
+        borderColor: 'black',
+        backgroundColor: 'rgba(255,0,0,0.3)',
+      },
+      {
+        borderColor: 'black',
+        backgroundColor: 'rgba(255,0,0,0.3)',
+      }
+    ];
+
     params.forEach((prm, idx) => {
-      this.multiLineChartColors[idx].borderColor = prm.color;
-      this.multiLineChartColors[idx].backgroundColor = 'transparent';
+      let colorIndex = idx;
+      // if (params.length == 2) {
+      //   colorIndex = colorIndex + 1;  
+      // }
+      if (this.multiLineChartColors[colorIndex]) {
+        this.multiLineChartColors[colorIndex].borderColor = prm.color;
+        this.multiLineChartColors[colorIndex].backgroundColor = 'transparent';
+      } else {
+        this.multiLineChartColors.push({
+          "borderColor": prm.color,
+          "backgroundColor": 'transparent'
+        });
+      }
+
+      this.multiLineChartColors = [...this.multiLineChartColors];
+
+      // console.log(this.multiLineChartColors);
+      
       compareChartData.forEach(mnth => {
         if (field === 'delta') {
           if (prm.field === 'active') {
@@ -551,7 +578,7 @@ export class StateDataComponent implements OnInit {
     this.totalTested = currentDayData.total.tested;
     this.totalRecovered = currentDayData.total.recovered;
     this.totalDeceased = currentDayData.total.deceased;
-    this.totalVaccinated = currentDayData.total.vaccinated;
+    this.totalVaccinated = currentDayData.total.vaccinated2;
     this.totalActive = currentDayData.total.confirmed - currentDayData.total.recovered - currentDayData.total.deceased - (currentDayData.total.other ? currentDayData.total.other : 0);
 
     this.selectedDataDays = field === 'total' ? 30 : 7;
@@ -571,7 +598,7 @@ export class StateDataComponent implements OnInit {
         dataToPush = confirmedStats - recoveredStats - deceasedStats;
       }
 
-      compareDates.push(this.getFormattedDate(dates[dates.length - (i + 1)]));
+      compareDates.unshift(this.getFormattedDate(dates[dates.length - (i + 1)]));
 
       if (field === 'delta') {
         this.deltaChartData.data.push(dataToPush);
@@ -587,7 +614,7 @@ export class StateDataComponent implements OnInit {
         this.chartLabels.push(this.getFormattedDate(dates[dates.length - (i + 1)]));
       }
 
-      compareChartData.push(selectedData);
+      compareChartData.unshift(selectedData);
 
       this.getChartProps(field, dataParam);
     }
@@ -647,7 +674,7 @@ export class StateDataComponent implements OnInit {
         hoverBgColor = 'rgba(153, 102, 255, .5)';
         break;
 
-      case 'vaccinated':
+      case 'vaccinated2':
         bgColor = 'rgba(255,193,7, .1)';
         borderColor = 'rgba(255,193,7, 1)';
         hoverBgColor = 'rgba(255,193,7, .5)';

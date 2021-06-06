@@ -71,8 +71,8 @@
                 <div class="vaccine-container">
                     <div class="mb-1 vaccine-text">Vaccine</div>
                     <div class="br-5 p-1 c-p"
-                        [ngClass]="selectedDelta === 'delta-vaccinated' ? 'active-status vaccine-bg' : 'vaccine-bg-light'"
-                        (click)="selectedDelta = 'delta-vaccinated'; selectedDelta7 = 'delta7-vaccinated'; selectedTotal = 'total-vaccinated'; getStateDate();">
+                        [ngClass]="selectedDelta === 'delta-vaccinated2' ? 'active-status vaccine-bg' : 'vaccine-bg-light'"
+                        (click)="selectedDelta = 'delta-vaccinated2'; selectedDelta7 = 'delta7-vaccinated2'; selectedTotal = 'total-vaccinated2'; getStateDate();">
                         <span class="delta vaccine-text-light">
                             <!-- <mat-icon>arrow_upward</mat-icon> -->
                         </span>
@@ -133,7 +133,8 @@
                         <div class="chart-title mb-1" [style.color]="lineChartTextColor">Daily Comparative Data</div>
                         <div class="d-flex justify-center text-center">
                             <div class="br-5 monthly-chart compare-chart"
-                                style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;"
+                                [style.minWidth.px]="windowWdt + 20"
+                                style="padding-top: 10px; padding-bottom: 10px;"
                                 [style.background]="lineChartBgColor">
                                 <canvas baseChart [datasets]="dailyCompareChartData" [labels]="dailyCompareChartLabels"
                                     [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true"
@@ -146,7 +147,8 @@
                         <div class="chart-title mb-1" [style.color]="lineChartTextColor">Weekly Comparative Data</div>
                         <div class="d-flex justify-center text-center">
                             <div class="br-5 monthly-chart compare-chart"
-                                style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;"
+                                [style.minWidth.px]="windowWdt + 20"    
+                                style="padding-top: 10px; padding-bottom: 10px;"
                                 [style.background]="lineChartBgColor">
                                 <canvas baseChart [datasets]="weeklyCompareChartData" [labels]="weeklyCompareChartLabels"
                                     [options]="compareLineChartOptions" [colors]="multiLineChartColors" [legend]="true"
@@ -159,6 +161,7 @@
                         <div class="chart-title mb-1" [style.color]="lineChartTextColor">Monthly Comparative Data</div>
                         <div class="d-flex justify-center text-center">
                             <div class="br-5 monthly-chart compare-chart"
+                                [style.minWidth.px]="windowWdt + 20"
                                 style="min-width: 555px; padding-top: 10px; padding-bottom: 10px;"
                                 [style.background]="lineChartBgColor">
                                 <canvas baseChart [datasets]="monthlyCompareChartData" [labels]="monthlyChartLabels"
