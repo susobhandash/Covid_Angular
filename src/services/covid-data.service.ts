@@ -6,9 +6,9 @@ import { HttpClient } from '@angular/common/http';
 })
 export class CovidDataService {
 
-  countryDataURL = "/v1/data.json";
-  statesDataURL = "/v1/state_district_wise.json";
-  timeSeriesURL = "/v1/v4/timeseries.json";
+  countryDataURL = "https://data.covid19india.org/data.json";
+  statesDataURL = "https://data.covid19india.org/state_district_wise.json";
+  timeSeriesURL = "https://data.covid19india.org/v4/timeseries.json";
 
   constructor(private http: HttpClient) { }
 
