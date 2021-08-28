@@ -1,0 +1,11 @@
+{
+  "/v1/*": {
+    "target": "https://data.covid19india.org",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/v1": "https://data.covid19india.org"
+    }
+  }
+}
